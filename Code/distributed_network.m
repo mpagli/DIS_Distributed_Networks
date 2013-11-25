@@ -87,9 +87,7 @@ for t = 1:t_max
     end
     
     %f_draw_network(fax,net,comm);
-    
-    %pause(0.5)
-    return
+    %return;
 end
 
 
