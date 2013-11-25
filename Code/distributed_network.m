@@ -24,12 +24,13 @@ noise = 0.1;      % percentage, gaussian noise on range measurements
 
 broadcastingNodes = floor(N*F);  % number of simultaneously broadcasting nodes
 
+node_list = int32(1:N);
 
 % Each node stores data
 data = cell(N, 1);
 
 % Initialize memory for each node
-for i = 1:N
+for i = node_list
     node_data=struct();
     node_data.id = int32(i);
     node_data.N = int32(N);
@@ -38,7 +39,10 @@ for i = 1:N
     node_data.broadcast_probability = 1;
     node_data.outbox = java.util.LinkedList();
     
-    node_data.data = struct('distances', nan(N, 1), 'robustquads', nan(0,0), 'position', nan(2,1));
+    node_data.data = cell(N,1);
+    for j = node_list
+        node_data.data{j} = struct('distances', nan(N, 1), 'robustquads', nan(0,0), 'position', nan(2,1));
+    end
     
     data{i} = node_data;
 end
@@ -62,17 +66,17 @@ for t = 1:t_max
     noisy_distances = noisy_distances + 0./(net.neighborhood == 1);
     
     %Update measured distances for all nodes
-    for i = 1:N
+    for i = node_list
         data{i}.measured_distances = noisy_distances(i,:);
     end
     
     %Call timer tick for every node
-    for i = 1:N
+    for i = node_list
         data{i} = node_timer_tick(data{i});
     end
     
     %Send broadcasts to neighboring nodes
-    for i = 1:N
+    for i = node_list
         while data{i}.outbox.size > 0
             message_type = data{i}.outbox.remove();
             message_data = data{i}.outbox.remove();
@@ -85,6 +89,7 @@ for t = 1:t_max
     %f_draw_network(fax,net,comm);
     
     %pause(0.5)
+    return
 end
 
 
