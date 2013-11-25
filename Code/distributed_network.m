@@ -11,6 +11,8 @@
 clear
 close all
 
+import java.util.LinkedList
+
 
 % Initialize network
 N = 10;           % number of nodes
@@ -21,52 +23,68 @@ t_max = 100;       % maximum number of time-steps
 noise = 0.1;      % percentage, gaussian noise on range measurements
 
 broadcastingNodes = floor(N*F);  % number of simultaneously broadcasting nodes
-plot_on = true;
-if(plot_on) fax=gca; else fax=[]; end;
 
-% Create network
-net = f_grow_graph(N,K,R,plot_on,fax);
-pause
 
 % Each node stores data
 data = cell(N, 1);
 
+% Initialize memory for each node
+for i = 1:N
+    node_data=struct();
+    node_data.id = int32(i);
+    node_data.N = int32(N);
+    node_data.measured_distances = nan(N, 1);
+    node_data.broadcast_distance_probability = F;
+    node_data.broadcast_probability = 1;
+    node_data.outbox = java.util.LinkedList();
+    
+    node_data.data = struct('distances', nan(N, 1), 'robustquads', nan(0,0), 'position', nan(2,1));
+    
+    data{i} = node_data;
+end
+
+
+% Create network and plot it
+plot_on = true;
+if(plot_on) fax=gca; else fax=[]; end;
+
+
+net = f_grow_graph(N,K,R,plot_on,fax);
+% LF: commented pause
+    
+
 % Start time (run until t_max)
-for t=1:t_max
-    cnl = randsample(N,broadcastingNodes,false); % sample random node ids
-    comm = zeros(N); % commmunication matrix
-    comm(cnl,:) = net.neighborhood(cnl,:);
- 
-    % Communicate noisy range values, update measurement matrix
-    mmnt = nan(N);  % centralized measurements matrix
-    mmnt(cnl,:) = (net.neighborhood(cnl,:)==1) .* ( ( net.dist(cnl,:) + (net.dist(cnl,:).*noise).*randn(length(cnl),N) )) + 0./(net.neighborhood(cnl,:)==1);
+for t = 1:t_max
+    %Add noise to distances
+    noisy_distances = net.dist .* ( 1 + (noise .* randn(N,N)));
     
+    %Set unmeasurable  (not neighbors) distances to NaN
+    noisy_distances = noisy_distances + 0./(net.neighborhood == 1);
     
-    %****************************
-    % Distributed calculations
-    
-    
-    for n=1:N
-        % Update nodes which received measurements
-        if( sum(~isnan(mmnt(:,n)))>=1 )
-            data{n} = f_update_mmnt(n,mmnt(:,n), data{n}, 'recv');
-        end
-    end
-    for n=1:N
-        % Update nodes which sent measurements
-        if(sum(n==cnl)==1)
-            data{n} = f_update_mmnt(n,mmnt(n,:)', data{n}, 'sent');
-        end
+    %Update measured distances for all nodes
+    for i = 1:N
+        data{i}.measured_distances = noisy_distances(i,:);
     end
     
-   
+    %Call timer tick for every node
+    for i = 1:N
+        data{i} = node_timer_tick(data{i});
+    end
     
+    %Send broadcasts to neighboring nodes
+    for i = 1:N
+        while data{i}.outbox.size > 0
+            message_type = data{i}.outbox.remove();
+            message_data = data{i}.outbox.remove();
+            for j = find(net.neighborhood(i,:) == 1)
+                data{j} = node_msg_recv(data{j}, i, message_type, message_data);
+            end
+        end
+    end
     
-    %****************************
+    %f_draw_network(fax,net,comm);
     
-    f_draw_network(fax,net,comm);
-    
-    pause(0.5)
+    %pause(0.5)
 end
 
 
