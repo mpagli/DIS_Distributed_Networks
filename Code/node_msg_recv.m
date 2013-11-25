@@ -3,6 +3,7 @@ function [node] = node_msg_recv(node, sender_id, message_type, message_data)
 
 if strcmp(message_type,'distances')
     node = node_update_distances(node, sender_id, message_data);
+elseif strcmp(message_type,'robustquads')
+    node = node_update_robust_quads(node, sender_id, message_data);
 end
-
 return

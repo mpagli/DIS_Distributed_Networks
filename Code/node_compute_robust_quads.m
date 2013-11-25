@@ -7,12 +7,17 @@ nneigh = length(neighbors);
 
 d_min = 0.3;
 
+robust = [];
+
 for j_i = 1:nneigh
     for k_i = j_i+1:nneigh
         for l_i = k_i+1:nneigh
             j = neighbors(j_i);
             k = neighbors(k_i);
             l = neighbors(l_i);
+            
+            n_list = sort([i j k l]);
+            
             
             d_ij = node.data{i}.distances(j);
             d_ik = node.data{i}.distances(k);
@@ -28,14 +33,18 @@ for j_i = 1:nneigh
             
             %triangles: ijk ijl ikl jkl
             if isRobust(d_ij, d_jk, d_ik, d_min) && isRobust(d_ij, d_jl, d_il, d_min) && isRobust(d_ik, d_kl, d_il, d_min) && isRobust(d_jk, d_kl, d_jl, d_min)
-               
-               disp([1, i,j,k, l]);
+                robust = [robust ; n_list];
             else
-                disp([0, i,j,k, l]);
+                %disp([0, n_list]);
             end
         end
     end
 end
-            
+
+if isequal(node.data{i}.robustquads, robust)==0
+    node = node_update_robust_quads(node, i, robust);
+    i
+    robust
+end
 
 return
