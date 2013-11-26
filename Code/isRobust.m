@@ -8,7 +8,7 @@ angles=[acos((-djk.^2 + dkl.^2 + dlj.^2) / (2*dkl*dlj));
 
 distances=[djk, dkl, dlj];
 
-b=(min(distances)*(sin(min(angles)).^2) > dmin);
+b=((sin(min(angles)).^2) > dmin);
 
 end
 

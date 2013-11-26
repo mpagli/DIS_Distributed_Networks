@@ -5,8 +5,6 @@ i=node.id;
 neighbors = int32(find(isnan(node.data{i}.distances)==0)');
 nneigh = length(neighbors);
 
-d_min = 0.3;
-
 robust = [];
 
 for j_i = 1:nneigh
@@ -16,26 +14,9 @@ for j_i = 1:nneigh
             k = neighbors(k_i);
             l = neighbors(l_i);
             
-            n_list = sort([i j k l]);
-            
-            
-            d_ij = node.data{i}.distances(j);
-            d_ik = node.data{i}.distances(k);
-            d_il = node.data{i}.distances(l);
-            d_jk = node.data{j}.distances(k);
-            d_jl = node.data{j}.distances(l);
-            d_kl = node.data{k}.distances(l);
-            
-            %Not connecter (as far as we know)
-            if isnan(d_ij) || isnan(d_ik) || isnan(d_il) || isnan(d_jk) || isnan(d_jl) || isnan(d_kl)
-                continue
-            end
-            
-            %triangles: ijk ijl ikl jkl
-            if isRobust(d_ij, d_jk, d_ik, d_min) && isRobust(d_ij, d_jl, d_il, d_min) && isRobust(d_ik, d_kl, d_il, d_min) && isRobust(d_jk, d_kl, d_jl, d_min)
+            if node_is_robust_quad(node, j, k, l)
+                n_list = sort([i j k l]);
                 robust = [robust ; n_list];
-            else
-                %disp([0, n_list]);
             end
         end
     end

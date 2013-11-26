@@ -15,8 +15,8 @@ import java.util.LinkedList
 
 
 % Initialize network
-N = 10;           % number of nodes
-K = 3;            % minimum connectivity
+N = 20;           % number of nodes
+K = 5;            % minimum connectivity
 R = 20;           % average communication radius
 F = 0.1;          % proportion of network broadcasting simultaneously
 t_max = 100;       % maximum number of time-steps
@@ -41,7 +41,7 @@ for i = node_list
     
     node_data.data = cell(N,1);
     for j = node_list
-        node_data.data{j} = struct('distances', nan(N, 1), 'robustquads', nan(0,0), 'position', nan(2,1));
+        node_data.data{j} = struct('distances', nan(N, 1), 'distances_n', zeros(N, 1), 'distances_M2', zeros(N, 1), 'robustquads', nan(0,0), 'position', nan(2,1), 'measured_noise', nan(N, 1));
     end
     
     data{i} = node_data;
@@ -56,6 +56,7 @@ if(plot_on) fax=gca; else fax=[]; end;
 net = f_grow_graph(N,K,R,plot_on,fax);
 % LF: commented pause
     
+w=[];
 
 % Start time (run until t_max)
 for t = 1:t_max
@@ -88,11 +89,7 @@ for t = 1:t_max
         end
     end
     
-    f_draw_network(fax,net);
-    
-    f_draw_overlay(fax, net, comm_edges, 'r', 3);
-    
-    %Draw robust quads
+    %Prepare robust quads for drawing
     robustquads_edges = [];
     for i = node_list
         robustquads = data{i}.data{i}.robustquads;
@@ -101,8 +98,11 @@ for t = 1:t_max
         end
     end
     
+    f_draw_network(fax,net);
+    f_draw_overlay(fax, net, comm_edges, 'r', 3);
     f_draw_overlay(fax, net, robustquads_edges, 'b', 2);
-    pause(0.5)
+    pause(0.1)
+    
     %return;
 end
 
