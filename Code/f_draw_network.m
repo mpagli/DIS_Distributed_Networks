@@ -10,7 +10,7 @@
 %
 %%
 
-function f_draw_network(fax,net,comm)
+function f_draw_network(fax, net)
 delta = 0.4;
 N = size(net.location,1);
 cla(fax);
@@ -27,18 +27,7 @@ for i=1:N
         end
     end
 end
-if(nargin==3) % also plot communication
-    cn = find(sum(comm,2)>0);
-    for i=1:N
-        for j=1:N
-            if comm(i,j)
-                li=line([net.location(i,1) net.location(j,1)],[net.location(i,2) net.location(j,2)]);
-                set(li,'color','g','linewidth',2);
-            end
-        end
-    end
-    scatter(net.location(cn,1),net.location(cn,2),25,'r','filled');
-end
+
 box on
 axis equal
 

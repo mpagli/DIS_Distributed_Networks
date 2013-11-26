@@ -76,17 +76,33 @@ for t = 1:t_max
     end
     
     %Send broadcasts to neighboring nodes
+    comm_edges = []; %keep track of communication
     for i = node_list
         while data{i}.outbox.size > 0
             message_type = data{i}.outbox.remove();
             message_data = data{i}.outbox.remove();
             for j = find(net.neighborhood(i,:) == 1)
                 data{j} = node_msg_recv(data{j}, i, message_type, message_data);
+                comm_edges = [comm_edges; i, j];
             end
         end
     end
     
-    %f_draw_network(fax,net,comm);
+    f_draw_network(fax,net);
+    
+    f_draw_overlay(fax, net, comm_edges, 'r', 3);
+    
+    %Draw robust quads
+    robustquads_edges = [];
+    for i = node_list
+        robustquads = data{i}.data{i}.robustquads;
+        for j = 1:size(robustquads, 1)
+            robustquads_edges = [robustquads_edges; robustquads(j,1) robustquads(j,2); robustquads(j,1) robustquads(j,3); robustquads(j,1) robustquads(j,4); robustquads(j,2) robustquads(j,3); robustquads(j,2) robustquads(j,4); robustquads(j,3) robustquads(j,4)];
+        end
+    end
+    
+    f_draw_overlay(fax, net, robustquads_edges, 'b', 2);
+    pause(0.5)
     %return;
 end
 

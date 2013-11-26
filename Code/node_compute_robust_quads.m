@@ -43,8 +43,6 @@ end
 
 if isequal(node.data{i}.robustquads, robust)==0
     node = node_update_robust_quads(node, i, robust);
-    i
-    robust
 end
 
 return
