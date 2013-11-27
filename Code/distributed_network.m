@@ -105,10 +105,40 @@ for t = 1:t_max
         f_draw_network(fax,net);
         f_draw_overlay(fax, net, comm_edges, 'r', 3);
         f_draw_overlay(fax, net, robustquads_edges, 'b', 2);
+        
+        
+        %Draw positions
+        % Get translation + rotation matrix to match network
+        % goal: mat_transform * [computed pos] + translation = net.location
+
+        translation = reshape(net.location(1,:),2,1);
+        theta = atan2(net.location(2,2)-net.location(1,2),net.location(2,1)-net.location(1,1));
+        mat_transform = [cos(theta), -sin(theta); sin(theta), cos(theta)];
+
+        v3 = reshape(data{3}.data{3}.position,2,1);
+        real_v3 = reshape(net.location(3,:),2,1);
+
+        %Maybe we have to take the symmetry to have the right orientation
+        if norm(mat_transform * v3  + translation - real_v3) > norm(mat_transform * [1,0;0,-1] * v3  + translation - real_v3)
+            mat_transform = mat_transform * [1,0;0,-1];
+        end
+
+        %example: compute position of node 3 in the real coordinate
+        %mat_transform * reshape(data{3}.data{3}.position,2,1)  + translation;
+
+        node_positions = [];
+        for i = 1:N
+            node_positions = [node_positions, mat_transform * reshape(data{i}.data{i}.position,2,1)  + translation];
+        end
+        scatter(fax, node_positions(1,:),node_positions(2,:),25,'g','filled');
+        
+        
         pause(0.1)
     end
     
     waitbar(t/t_max,progress,sprintf('At iteration %d/%d...',t,t_max));
+    
+
     
     %return;
 end
