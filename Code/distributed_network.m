@@ -22,6 +22,9 @@ F = 0.1;          % proportion of network broadcasting simultaneously
 t_max = 100;       % maximum number of time-steps
 noise = 0.1;      % percentage, gaussian noise on range measurements
 
+plot_on = true;
+%plot_on = false;
+
 broadcastingNodes = floor(N*F);  % number of simultaneously broadcasting nodes
 
 node_list = int32(1:N);
@@ -49,12 +52,12 @@ end
 
 
 % Create network and plot it
-plot_on = true;
 if(plot_on) fax=gca; else fax=[]; end;
-
 
 net = f_grow_graph(N,K,R,plot_on,fax);
 % LF: commented pause
+
+progress = waitbar(0,'Starting simulation...');
     
 w=[];
 
@@ -89,22 +92,28 @@ for t = 1:t_max
         end
     end
     
-    %Prepare robust quads for drawing
-    robustquads_edges = [];
-    for i = node_list
-        robustquads = data{i}.data{i}.robustquads;
-        for j = 1:size(robustquads, 1)
-            robustquads_edges = [robustquads_edges; robustquads(j,1) robustquads(j,2); robustquads(j,1) robustquads(j,3); robustquads(j,1) robustquads(j,4); robustquads(j,2) robustquads(j,3); robustquads(j,2) robustquads(j,4); robustquads(j,3) robustquads(j,4)];
+    if plot_on
+        %Prepare robust quads for drawing
+        robustquads_edges = [];
+        for i = node_list
+            robustquads = data{i}.data{i}.robustquads;
+            for j = 1:size(robustquads, 1)
+                robustquads_edges = [robustquads_edges; robustquads(j,1) robustquads(j,2); robustquads(j,1) robustquads(j,3); robustquads(j,1) robustquads(j,4); robustquads(j,2) robustquads(j,3); robustquads(j,2) robustquads(j,4); robustquads(j,3) robustquads(j,4)];
+            end
         end
+        
+        f_draw_network(fax,net);
+        f_draw_overlay(fax, net, comm_edges, 'r', 3);
+        f_draw_overlay(fax, net, robustquads_edges, 'b', 2);
+        pause(0.1)
     end
     
-    f_draw_network(fax,net);
-    f_draw_overlay(fax, net, comm_edges, 'r', 3);
-    f_draw_overlay(fax, net, robustquads_edges, 'b', 2);
-    pause(0.1)
+    waitbar(t/t_max,progress,sprintf('At iteration %d/%d...',t,t_max));
     
     %return;
 end
+
+close(progress);
 
 
 
