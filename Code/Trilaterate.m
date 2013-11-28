@@ -27,9 +27,9 @@ final_set=[mask(1,1),mask(1,2),mask(2,1),mask(2,2),mask(3,1),mask(3,2)];
 
 final_set=unique(final_set);
 
-if( length(final_set) ~= 3)
-    error(sprintf('Oups'));
-end
+%if( length(final_set) ~= 3)
+%    error(sprintf('Oups'));
+%end
 
 Position=1/3*(Solutions(:,final_set(1))+Solutions(:,final_set(2))+Solutions(:,final_set(3))); %return the average
 
