@@ -16,6 +16,8 @@ end
 
 %Check if we can update the position in special cases
 
+node=node_find_location(node);
+
 %Node = 2 and known distance to 1
 if node.id==2 && isnan(node.data{2}.distances(1))==0
     if node.data{2}.distances(1) ~= node.data{2}.position(1)

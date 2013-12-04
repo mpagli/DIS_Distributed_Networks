@@ -15,7 +15,7 @@ import java.util.LinkedList
 
 
 % Initialize network
-N = 11;           % number of nodes
+N = 26;           % number of nodes
 K = 10;            % minimum connectivity
 R = 20;           % average communication radius
 F = 0.1;          % proportion of network broadcasting simultaneously
@@ -54,7 +54,8 @@ end
 % Create network and plot it
 if(plot_on) fax=gca; else fax=[]; end;
 
-net = f_grow_graph(N,K,R,plot_on,fax);
+%net = f_grow_graph(N,K,R,plot_on,fax);
+net = f_regular_net(N,K,R,plot_on,fax);
 % LF: commented pause
 
 progress = waitbar(0,'Starting simulation...');
