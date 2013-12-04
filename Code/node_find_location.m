@@ -71,7 +71,7 @@ dck= node.data{selectedQuad(3)}.distances(node.id);
 
 new_position = Trilaterate(Pa,dak,Pb,dbk,Pc,dck);
 
-position_changed = isequal(node.data{node.id}.position(:), new_position(:));
+position_changed = ~isequal(node.data{node.id}.position(:), new_position(:));
 
 if position_changed
     node = node_update_position(node, node.id, Trilaterate(Pa,dak,Pb,dbk,Pc,dck));
