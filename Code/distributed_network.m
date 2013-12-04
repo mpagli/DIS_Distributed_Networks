@@ -10,12 +10,13 @@
 
 clear
 close all
+profile on;
 
 import java.util.LinkedList
 
 
 % Initialize network
-N = 26;           % number of nodes
+N = 20;           % number of nodes
 K = 10;            % minimum connectivity
 R = 20;           % average communication radius
 F = 0.1;          % proportion of network broadcasting simultaneously
@@ -78,6 +79,7 @@ for t = 1:t_max
     %Call timer tick for every node
     for i = node_list
         data{i} = node_timer_tick(data{i});
+        data{i}=node_find_location(data{i});
     end
     
     %Send broadcasts to neighboring nodes
@@ -143,7 +145,7 @@ for t = 1:t_max
     
     %return;
 end
-
+profile viewer 
 close(progress);
 
 

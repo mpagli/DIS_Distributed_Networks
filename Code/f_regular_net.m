@@ -56,6 +56,16 @@ for i0 = 2:N
     end
 end
 
+for i0 = 1:N
+    if i0+5>N
+        break;
+    end
+
+    net.neighborhood(i0,i0+5) = 1;
+    net.neighborhood(i0+5,i0) = 1;
+    
+    i0=i0+1;
+end
 
 
 if plot_on
