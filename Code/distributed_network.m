@@ -15,8 +15,8 @@ import java.util.LinkedList
 
 
 % Initialize network
-N = 20;           % number of nodes
-K = 5;            % minimum connectivity
+N = 11;           % number of nodes
+K = 10;            % minimum connectivity
 R = 20;           % average communication radius
 F = 0.1;          % proportion of network broadcasting simultaneously
 t_max = 100;       % maximum number of time-steps
@@ -90,7 +90,6 @@ for t = 1:t_max
                 comm_edges = [comm_edges; i, j];
             end
         end
-        data{i}.data{i}.robustquads
     end
     
     if plot_on

@@ -69,6 +69,6 @@ dak= node.data{selectedQuad(1)}.distances(node.id);
 dbk= node.data{selectedQuad(2)}.distances(node.id);
 dck= node.data{selectedQuad(3)}.distances(node.id);
 
-node.data{node.id}.position = Trilaterate(Pa,dak,Pb,dbk,Pc,dck);
+node = node_update_position(node, node.id, Trilaterate(Pa,dak,Pb,dbk,Pc,dck));
 
 end
