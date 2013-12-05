@@ -71,28 +71,10 @@ dck= node.data{selectedQuad(3)}.distances(node.id);
 
 new_position = Trilaterate(Pa,dak,Pb,dbk,Pc,dck);
 
-if sum(isnan(node.data{node.id}.position(:))) == 0
-    position_changed = ~isequal(node.data{node.id}.old_positions(:,1), new_position(:));
-else
-    position_changed = 1;
-end
+position_changed = ~isequal(node.data{node.id}.position(:), new_position(:));
 
-N=20;
-node.data{node.id}.old_positions
 if position_changed
-    node.data{node.id}.old_positions=circshift(node.data{node.id}.old_positions',1)';  
-    node.data{node.id}.old_positions(:,1)=new_position;
-    Avrg=[0;0];
-    for i= 1 : 20   %there is certainly a more elegant way to do using sum() ... 
-        if( ~isnan(node.data{node.id}.old_positions(1,i)))
-            Avrg = Avrg + node.data{node.id}.old_positions(:,i)
-        else
-            N=i-1;
-            break;
-        end
-    end
-    Avrg=Avrg./N;
-    node = node_update_position(node, node.id, Avrg);
+    node = node_update_position(node, node.id, new_position);
 end
 
 end
