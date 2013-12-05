@@ -20,7 +20,7 @@ N = 20;           % number of nodes
 K = 10;            % minimum connectivity
 R = 20;           % average communication radius
 F = 0.1;          % proportion of network broadcasting simultaneously
-t_max = 100;       % maximum number of time-steps
+t_max = 200;       % maximum number of time-steps
 noise = 0.1;      % percentage, gaussian noise on range measurements
 
 plot_on = true;
@@ -45,7 +45,7 @@ for i = node_list
     
     node_data.data = cell(N,1);
     for j = node_list
-        node_data.data{j} = struct('distances', nan(N, 1), 'distances_n', zeros(N, 1), 'distances_M2', zeros(N, 1), 'robustquads', nan(0,0), 'position', nan(2,1), 'measured_noise', nan(N, 1), 'path_length', nan(1, 1));
+        node_data.data{j} = struct('distances', nan(N, 1), 'distances_n', zeros(N, 1), 'distances_M2', zeros(N, 1), 'robustquads', nan(0,0), 'position', nan(2,1), 'measured_noise', nan(N, 1), 'path_length', nan(1, 1), 'old_positions' , nan(2,20));
     end
     
     data{i} = node_data;
