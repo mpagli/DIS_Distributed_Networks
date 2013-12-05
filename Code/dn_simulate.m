@@ -5,8 +5,10 @@ plot_on = exist('fax');
 N = length(nodes);
 node_list = 1:N;
 
-progress = waitbar(0,'Starting simulation...');
-cleanup = onCleanup( @()( close( progress ) ) );
+if plot_on
+    progress = waitbar(0,'Starting simulation...');
+    cleanup = onCleanup( @()( close( progress ) ) );
+end
     
 w=[];
 
@@ -81,9 +83,10 @@ for t = 1:t_max
         end
         scatter(fax, node_positions(1,:),node_positions(2,:),25,'g','filled');
         
-        
         pause(0.1)
     end
     
-    waitbar(t/t_max,progress,sprintf('At iteration %d/%d...',t,t_max));
+    if plot_on
+        waitbar(t/t_max,progress,sprintf('At iteration %d/%d...',t,t_max));
+    end
 end

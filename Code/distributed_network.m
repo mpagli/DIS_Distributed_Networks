@@ -19,7 +19,7 @@ N = 20;           % number of nodes
 K = 5;            % minimum connectivity
 R = 20;           % average communication radius
 F = 0.1;          % proportion of network broadcasting simultaneously
-t_max = 100;       % maximum number of time-steps
+t_max = 1000;     % maximum number of time-steps
 noise = 0.1;      % percentage, gaussian noise on range measurements
 
 plot_on = true;
@@ -58,14 +58,15 @@ if(plot_on) fax=gca; else fax=[]; end;
 net = f_regular_net(N,K,R,plot_on,fax);
 % LF: commented pause
 
-profile on;
+profile off;
 
 iterations = 1:t_max;
 positions_found = [];
 normalized_ss = [];
 
 for it = 1:t_max
-    data = dn_simulate(data, net, 1, noise, fax);
+    it
+    data = dn_simulate(data, net, 1, noise);
     
     cur_pf = 0;
     cur_ss = 0;
@@ -81,7 +82,7 @@ for it = 1:t_max
 end
 
 profile off;
-profview;
+%profview;
 
 figure
 plotyy(iterations, positions_found, iterations, normalized_ss);
