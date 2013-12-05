@@ -16,10 +16,10 @@ import java.util.LinkedList
 
 % Initialize network
 N = 20;           % number of nodes
-K = 20;            % minimum connectivity
+K = 5;            % minimum connectivity
 R = 20;           % average communication radius
 F = 0.1;          % proportion of network broadcasting simultaneously
-t_max = 200;       % maximum number of time-steps
+t_max = 100;       % maximum number of time-steps
 noise = 0.1;      % percentage, gaussian noise on range measurements
 
 plot_on = true;
@@ -59,10 +59,32 @@ net = f_regular_net(N,K,R,plot_on,fax);
 % LF: commented pause
 
 profile on;
-data = dn_simulate(data, net, t_max, noise, fax);
+
+iterations = 1:t_max;
+positions_found = [];
+normalized_ss = [];
+
+for it = 1:t_max
+    data = dn_simulate(data, net, 1, noise, fax);
+    
+    cur_pf = 0;
+    cur_ss = 0;
+    for id = 1:N
+        if sum(isnan(data{id}.data{id}.position)) == 0
+            cur_pf = cur_pf + 1;
+            cur_ss = norm(reshape(data{id}.data{id}.position,1,2) - net.location(id,:)).^2;
+        end
+    end
+    
+    positions_found = [positions_found cur_pf];
+    normalized_ss = [normalized_ss cur_ss/(cur_pf-1)];
+end
+
+profile off;
 profview;
 
-
+figure
+plotyy(iterations, positions_found, iterations, normalized_ss);
 
 
 
