@@ -8,10 +8,17 @@
 % 
 %%
 
-clear
+%clear
 close all
 
 import java.util.LinkedList
+
+%
+if exist('saved_rng')
+    rng(saved_rng)
+else
+    saved_rng = rng
+end
 
 
 % Initialize network
@@ -19,8 +26,8 @@ N = 20;           % number of nodes
 K = 5;            % minimum connectivity
 R = 20;           % average communication radius
 F = 0.1;          % proportion of network broadcasting simultaneously
-t_max = 100;     % maximum number of time-steps
-noise = 0.1;      % percentage, gaussian noise on range measurements
+t_max = 200;     % maximum number of time-steps
+noise = 0.05;      % percentage, gaussian noise on range measurements
 
 plot_on = true;
 %plot_on = false;
@@ -41,6 +48,7 @@ for i = node_list
     node_data.broadcast_distance_probability = F;
     node_data.broadcast_probability = 1;
     node_data.outbox = java.util.LinkedList();
+    node_data.d_min_factor = 3; %2-sigmas
     
     node_data.data = cell(N,1);
     for j = node_list
@@ -60,7 +68,7 @@ net = f_regular_net(N,K,R,plot_on,fax);
 
 profile off;
 
-[data, performance] = dn_simulate(data, net, t_max, noise, fax);
+[data, performance] = dn_simulate(data, net, t_max, noise);
 
 profile off;
 %profview;
