@@ -79,7 +79,6 @@ for t = 1:t_max
     %Call timer tick for every node
     for i = node_list
         data{i} = node_timer_tick(data{i});
-        data{i}=node_find_location(data{i});
     end
     
     %Send broadcasts to neighboring nodes
