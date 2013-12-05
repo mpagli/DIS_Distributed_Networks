@@ -21,4 +21,7 @@ if rand() < node.broadcast_distance_probability
     end
 end
 
+% Try to localize
+node = node_find_location(node);
+
 return

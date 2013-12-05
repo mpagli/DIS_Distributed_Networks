@@ -8,11 +8,6 @@ i=node.id;
 
 others_indexes = [j,k,l];
 
-d_min = mean(node.data{i}.measured_noise(others_indexes)) .* 2; %2-sigma
-
-if debug
-    fprintf('d_min = %f\n', d_min);
-end
 
 n_list = sort([i j k l]);
 
@@ -25,7 +20,6 @@ d_kl = node.data{k}.distances(l);
 
 if debug
     fprintf('quad %d %d %d %d\n', n_list);
-    fprintf('d_min = %f\n', d_min);
     fprintf('d_ij = %f\n', d_ij);
     fprintf('d_ik = %f\n', d_ik);
     fprintf('d_il = %f\n', d_il);
@@ -40,6 +34,12 @@ if isnan(d_ij) || isnan(d_ik) || isnan(d_il) || isnan(d_jk) || isnan(d_jl) || is
         fprintf('Not connected!\n');
     end
     return;
+end
+
+d_min = mean(node.data{i}.measured_noise(others_indexes)) .* 2; %2-sigma
+
+if debug
+    fprintf('d_min = %f\n', d_min);
 end
 
 if isRobust(d_ij, d_jk, d_ik, d_min)==0
