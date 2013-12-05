@@ -1,4 +1,6 @@
-function [nodes] = dn_simulate(nodes, net, t_max, noise, plot_on, fax)
+function [nodes] = dn_simulate(nodes, net, t_max, noise, fax)
+
+plot_on = exist('fax');
 
 N = length(nodes);
 node_list = 1:N;

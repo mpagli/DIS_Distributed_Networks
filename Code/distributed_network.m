@@ -10,14 +10,13 @@
 
 clear
 close all
-profile on;
 
 import java.util.LinkedList
 
 
 % Initialize network
 N = 20;           % number of nodes
-K = 10;            % minimum connectivity
+K = 20;            % minimum connectivity
 R = 20;           % average communication radius
 F = 0.1;          % proportion of network broadcasting simultaneously
 t_max = 100;       % maximum number of time-steps
@@ -59,8 +58,9 @@ if(plot_on) fax=gca; else fax=[]; end;
 net = f_regular_net(N,K,R,plot_on,fax);
 % LF: commented pause
 
-data = dn_simulate(data, net, t_max, noise, plot_on, fax);
-
+profile on;
+data = dn_simulate(data, net, t_max, noise, fax);
+profview;
 
 
 

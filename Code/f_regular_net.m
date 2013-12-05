@@ -38,35 +38,15 @@ for i0 = 1:N
     end
 end
 
-for i0 = 2:N
-    idx = i0;
-    idx2 = i0-1;
-    idx3 = i0-2;
-    idx4 = i0-3;
-    
-    net.neighborhood(idx,idx2) = 1;
-    net.neighborhood(idx2,idx) = 1;
-    if idx3 > 0
-        net.neighborhood(idx,idx3) = 1;
-        net.neighborhood(idx3,idx) = 1;
-    end
-    if idx4 > 0 && mod(idx,2)==0
-        net.neighborhood(idx,idx4) = 1;
-        net.neighborhood(idx4,idx) = 1;
-    end
-end
-
 for i0 = 1:N
-    if i0+5>N
-        break;
+    for i1 = i0-1:-1:i0-K
+        if i1 <= 0
+            continue
+        end
+        net.neighborhood(i0,i1) = 1;
+        net.neighborhood(i1,i0) = 1;
     end
-
-    net.neighborhood(i0,i0+5) = 1;
-    net.neighborhood(i0+5,i0) = 1;
-    
-    i0=i0+1;
 end
-
 
 if plot_on
     f_draw_network(fax,net);
