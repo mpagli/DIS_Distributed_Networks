@@ -5,6 +5,11 @@ i=node.id;
 neighbors = int32(find(isnan(node.data{i}.distances)==0)');
 nneigh = length(neighbors);
 
+connectivity = zeros(node.N,node.N);
+for ni=1:node.N
+    connectivity(ni,:) = node.data{ni}.distances;
+end
+
 robust = [];
 
 for j_i = 1:nneigh
@@ -14,7 +19,7 @@ for j_i = 1:nneigh
             k = neighbors(k_i);
             l = neighbors(l_i);
             
-            if node_is_robust_quad(node, j, k, l)
+            if node_is_robust_quad(node, j, k, l, connectivity)
                 n_list = sort([i j k l]);
                 robust = [robust ; n_list];
             end

@@ -1,4 +1,4 @@
-function [robust] = node_is_robust_quad(node, j, k, l)
+function [robust] = node_is_robust_quad(node, j, k, l, connectivity)
 
 debug = 0;
 
@@ -11,12 +11,21 @@ others_indexes = [j,k,l];
 
 n_list = sort([i j k l]);
 
-d_ij = node.data{i}.distances(j);
-d_ik = node.data{i}.distances(k);
-d_il = node.data{i}.distances(l);
-d_jk = node.data{j}.distances(k);
-d_jl = node.data{j}.distances(l);
-d_kl = node.data{k}.distances(l);
+if exist('connectivity','var')
+    d_ij = connectivity(i,j);
+    d_ik = connectivity(i,k);
+    d_il = connectivity(i,l);
+    d_jk = connectivity(j,k);
+    d_jl = connectivity(j,l);
+    d_kl = connectivity(k,l);
+else
+    d_ij = node.data{i}.distances(j);
+    d_ik = node.data{i}.distances(k);
+    d_il = node.data{i}.distances(l);
+    d_jk = node.data{j}.distances(k);
+    d_jl = node.data{j}.distances(l);
+    d_kl = node.data{k}.distances(l);
+end
 
 if debug
     fprintf('quad %d %d %d %d\n', n_list);
