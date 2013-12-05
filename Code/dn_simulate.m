@@ -1,4 +1,4 @@
-function [nodes] = dn_simulate(nodes, net, t_max, noise, fax)
+function [nodes, performance_metrics] = dn_simulate(nodes, net, t_max, noise, fax)
 
 plot_on = exist('fax');
 
@@ -9,6 +9,8 @@ if plot_on
     progress = waitbar(0,'Starting simulation...');
     cleanup = onCleanup( @()( close( progress ) ) );
 end
+
+performance_metrics = [];
     
 w=[];
 
@@ -43,6 +45,24 @@ for t = 1:t_max
         end
     end
     
+    % Compute transformation from internal coordinates to real world ones
+    translation = reshape(net.location(1,:),2,1);
+    theta = atan2(net.location(2,2)-net.location(1,2),net.location(2,1)-net.location(1,1));
+    mat_transform = [cos(theta), -sin(theta); sin(theta), cos(theta)];
+
+    v3 = reshape(nodes{3}.data{3}.position,2,1);
+    real_v3 = reshape(net.location(3,:),2,1);
+
+    %Maybe we have to take the symmetry to have the right orientation
+    if norm(mat_transform * v3  + translation - real_v3) > norm(mat_transform * [1,0;0,-1] * v3  + translation - real_v3)
+        mat_transform = mat_transform * [1,0;0,-1];
+    end
+
+    %example: compute position of node 3 in the real coordinate
+    %mat_transform * reshape(nodes{3}.data{3}.position,2,1)  + translation;
+    
+    get_position_for = @(id) mat_transform * reshape(nodes{id}.data{id}.position,2,1)  + translation;
+    
     if plot_on
         %Prepare robust quads for drawing
         robustquads_edges = [];
@@ -62,24 +82,9 @@ for t = 1:t_max
         % Get translation + rotation matrix to match network
         % goal: mat_transform * [computed pos] + translation = net.location
 
-        translation = reshape(net.location(1,:),2,1);
-        theta = atan2(net.location(2,2)-net.location(1,2),net.location(2,1)-net.location(1,1));
-        mat_transform = [cos(theta), -sin(theta); sin(theta), cos(theta)];
-
-        v3 = reshape(nodes{3}.data{3}.position,2,1);
-        real_v3 = reshape(net.location(3,:),2,1);
-
-        %Maybe we have to take the symmetry to have the right orientation
-        if norm(mat_transform * v3  + translation - real_v3) > norm(mat_transform * [1,0;0,-1] * v3  + translation - real_v3)
-            mat_transform = mat_transform * [1,0;0,-1];
-        end
-
-        %example: compute position of node 3 in the real coordinate
-        %mat_transform * reshape(nodes{3}.data{3}.position,2,1)  + translation;
-
         node_positions = [];
         for i = 1:N
-            node_positions = [node_positions, mat_transform * reshape(nodes{i}.data{i}.position,2,1)  + translation];
+            node_positions = [node_positions, get_position_for(i)];
         end
         scatter(fax, node_positions(1,:),node_positions(2,:),25,'g','filled');
         
@@ -89,4 +94,16 @@ for t = 1:t_max
     if plot_on
         waitbar(t/t_max,progress,sprintf('At iteration %d/%d...',t,t_max));
     end
+    
+    %compute performance metrics
+    cur_pf = 0;
+    cur_ss = 0;
+    for id = 1:N
+        if sum(isnan(nodes{id}.data{id}.position)) == 0
+            cur_pf = cur_pf + 1;
+            cur_ss = norm(get_position_for(id) - net.location(id,:)').^2;
+        end
+    end
+    
+    performance_metrics = [performance_metrics; cur_pf cur_ss/(cur_pf-1)];
 end
