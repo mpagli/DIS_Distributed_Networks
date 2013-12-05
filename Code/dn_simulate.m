@@ -93,6 +93,8 @@ for t = 1:t_max
     
     if plot_on
         waitbar(t/t_max,progress,sprintf('At iteration %d/%d...',t,t_max));
+    else
+        fprintf('At iteration %d/%d...\n',t,t_max)
     end
     
     %compute performance metrics
