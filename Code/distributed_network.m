@@ -68,7 +68,9 @@ net = f_regular_net(N,K,R,plot_on,fax);
 
 profile off;
 
+tic
 [data, performance] = dn_simulate(data, net, t_max, noise);
+toc
 
 profile off;
 %profview;
