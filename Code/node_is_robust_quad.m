@@ -36,7 +36,7 @@ if isnan(d_ij) || isnan(d_ik) || isnan(d_il) || isnan(d_jk) || isnan(d_jl) || is
     return;
 end
 
-d_min = mean(node.data{i}.measured_noise(others_indexes)) .* 2; %2-sigma
+d_min = mean(node.data{i}.measured_noise(others_indexes)) .* node.d_min_factor; %2-sigma
 
 if debug
     fprintf('d_min = %f\n', d_min);
