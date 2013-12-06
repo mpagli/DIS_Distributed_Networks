@@ -38,6 +38,25 @@ else
     end
 end
 
+if node.spring_relaxation_factor > 0
+    force = [0 0]';
+    mes_distances = node.data{node.id}.distances;
+    mes_position = reshape(node.data{node.id}.position,2,1);
+    other_ids = find(~isnan(mes_distances))';
+    if ~isempty(other_ids)
+        for other_id=other_ids
+            vec = reshape(node.data{other_id}.position,2,1) - mes_position;
+            mes_distance = norm(vec);
+            delta = mes_distances(other_id) - mes_distance;
+            if ~isnan(delta)
+                force = force + delta*vec/mes_distance;
+            end
+        end
+    end
+    %node.data{node.id}.position = reshape(node.data{node.id}.position,2,1) - node.spring_relaxation_factor * force;
+    node = node_update_position(node, node.id, reshape(node.data{node.id}.position,2,1) - node.spring_relaxation_factor * force);
+end
+
 
 %Reset *_changed
 node.distances_changed = false;

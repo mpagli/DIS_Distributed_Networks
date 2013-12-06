@@ -95,12 +95,6 @@ for t = 1:t_max
         pause(0.1)
     end
     
-    if plot_on
-        waitbar(t/t_max,progress,sprintf('At iteration %d/%d...',t,t_max));
-    else
-        fprintf('At iteration %d/%d...\n',t,t_max)
-    end
-    
     %compute performance metrics
     cur_pf = 0;
     cur_ss = 0;
@@ -112,4 +106,11 @@ for t = 1:t_max
     end
     
     performance_metrics = [performance_metrics; cur_pf cur_ss/(cur_pf-1)];
+    
+    if plot_on
+        waitbar(t/t_max,progress,sprintf('At iteration %d/%d...',t,t_max));
+    else
+        fprintf('At iteration %d/%d (SS=%0.6f)...\n',t,t_max,  cur_ss/(cur_pf-1))
+    end
+    
 end
