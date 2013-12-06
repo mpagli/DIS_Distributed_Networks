@@ -30,7 +30,7 @@ t_max = 200;     % maximum number of time-steps
 noise = 0.05;      % percentage, gaussian noise on range measurements
 
 %plot_on = true;
-plot_on = false;
+plot_on = true;
 profile_on = false;
 
 broadcastingNodes = floor(N*F);  % number of simultaneously broadcasting nodes
@@ -68,7 +68,7 @@ end
 fax = gca;
 
 %net = f_grow_graph(N,K,R,plot_on,fax);
-net = f_regular_net(N,K,R,plot_on,fax);
+net = f_grow_graph(N,K,R,plot_on,fax);
 % LF: commented pause
 
 if profile_on

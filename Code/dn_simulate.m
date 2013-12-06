@@ -74,7 +74,9 @@ for t = 1:t_max
         end
         
         f_draw_network(fax,net);
-        f_draw_overlay(fax, net, comm_edges, 'r', 3);
+        if t<t_max 
+            f_draw_overlay(fax, net, comm_edges, 'r', 3);
+        end
         f_draw_overlay(fax, net, robustquads_edges, 'b', 2);
         
         
