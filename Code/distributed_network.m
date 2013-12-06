@@ -27,7 +27,7 @@ K = 10;            % minimum connectivity
 R = 20;           % average communication radius
 F = 0.1;          % proportion of network broadcasting simultaneously
 t_max = 100;     % maximum number of time-steps
-noise = 0.05;      % percentage, gaussian noise on range measurements
+noise = 0.1;      % percentage, gaussian noise on range measurements
 
 %plot_on = true;
 plot_on = false;
@@ -53,8 +53,8 @@ for i = node_list
     node_data.robustquads_changed = false;
     node_data.positions_changed = false;
     
-    node_data.d_min_factor = 2; %2-sigmas
-    node_data.spring_relaxation_factor = 0; %0.01;
+    node_data.d_min_factor = 1.5; %2-sigmas
+    node_data.spring_relaxation_factor = 0.7; % 0.1;
     
     node_data.data = cell(N,1);
     for j = node_list
@@ -81,9 +81,9 @@ end
 
 tic
 if (plot_on)
-    [data, performance] = dn_simulate(data, net, t_max, noise, fax);
+    [new_data, performance] = dn_simulate(data, net, t_max, noise, fax);
 else
-    [data, performance] = dn_simulate(data, net, t_max, noise);
+    [new_data, performance] = dn_simulate(data, net, t_max, noise);
 end
 toc
 
