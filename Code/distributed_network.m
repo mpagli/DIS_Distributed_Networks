@@ -69,8 +69,13 @@ end
 %if(plot_on) fax=gca; else fax=[]; end;
 fax = gca;
 
+<<<<<<< HEAD
 net = f_grow_graph(N,K,R,plot_on,fax);
 %net = f_regular_net(N,K,R,plot_on,fax);
+=======
+%net = f_grow_graph(N,K,R,plot_on,fax);
+net = f_grow_graph(N,K,R,plot_on,fax);
+>>>>>>> cf2fc03d276ec5f56db5b4d6e27b33697502f63e
 % LF: commented pause
 
 if profile_on
