@@ -84,7 +84,11 @@ for t = 1:t_max
 
         node_positions = [];
         for i = 1:N
-            node_positions = [node_positions, get_position_for(i)];
+            node_position = get_position_for(i);
+            node_positions = [node_positions, node_position];
+            
+            li=line([net.location(i,1) node_position(1)], [net.location(i,2) node_position(2)]);
+            set(li,'color', 'g', 'linewidth', 1);
         end
         scatter(fax, node_positions(1,:),node_positions(2,:),25,'g','filled');
         
