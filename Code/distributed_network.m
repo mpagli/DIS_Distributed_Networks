@@ -29,8 +29,8 @@ F = 0.1;          % proportion of network broadcasting simultaneously
 t_max = 200;     % maximum number of time-steps
 noise = 0.05;      % percentage, gaussian noise on range measurements
 
-plot_on = true;
-%plot_on = false;
+%plot_on = true;
+plot_on = false;
 
 broadcastingNodes = floor(N*F);  % number of simultaneously broadcasting nodes
 
@@ -60,7 +60,8 @@ end
 
 
 % Create network and plot it
-if(plot_on) fax=gca; else fax=[]; end;
+%if(plot_on) fax=gca; else fax=[]; end;
+fax = gca;
 
 %net = f_grow_graph(N,K,R,plot_on,fax);
 net = f_regular_net(N,K,R,plot_on,fax);
@@ -69,7 +70,11 @@ net = f_regular_net(N,K,R,plot_on,fax);
 profile off;
 
 tic
-[data, performance] = dn_simulate(data, net, t_max, noise);
+if (plot_on)
+    [data, performance] = dn_simulate(data, net, t_max, noise, fax);
+else
+    [data, performance] = dn_simulate(data, net, t_max, noise);
+end
 toc
 
 profile off;
