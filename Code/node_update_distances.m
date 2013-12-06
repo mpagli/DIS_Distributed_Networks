@@ -12,6 +12,6 @@ if node.id == node_id
     node = broadcast(node, 'distances', distances);
 end
 
-node = node_compute_robust_quads(node);
+node.distances_changed = true;
 
 return

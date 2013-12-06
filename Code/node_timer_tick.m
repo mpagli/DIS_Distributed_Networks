@@ -1,6 +1,11 @@
 function [node] = node_timer_tick(node)
 %fprintf('[node %03d] Timer event\n',node.id);
 
+if node.distances_changed
+    node = node_compute_robust_quads(node);
+    node.distances_changed = false;
+end
+
 %Check if we can update the position in special cases
 if node.id == 1
     % Initialize

@@ -49,6 +49,7 @@ for i = node_list
     node_data.broadcast_probability = 1;
     node_data.outbox = java.util.LinkedList();
     node_data.d_min_factor = 3; %2-sigmas
+    node_data.distances_changed = false;
     
     node_data.data = cell(N,1);
     for j = node_list
