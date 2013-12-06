@@ -34,7 +34,7 @@ end
 
 for i0 = 1:N
     for i1 = 1:N
-        net.dist(i0,i1) = norm(net.location(i0,:) - net.location(i1,:))
+        net.dist(i0,i1) = norm(net.location(i0,:) - net.location(i1,:));
     end
 end
 
