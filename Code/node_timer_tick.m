@@ -3,7 +3,6 @@ function [node] = node_timer_tick(node)
 
 if node.distances_changed
     node = node_compute_robust_quads(node);
-    node.distances_changed = false;
 end
 
 %Check if we can update the position in special cases
@@ -34,8 +33,16 @@ elseif node.id==3
     end
 else
     % Try to localize
-    node = node_find_location(node);
+    if node.distances_changed || node.robustquads_changed || node.positions_changed
+        node = node_find_location(node);
+    end
 end
+
+
+%Reset *_changed
+node.distances_changed = false;
+node.robustquads_changed = false;
+node.positions_changed = false;
 
 %Sometimes broadcast data
 if rand() < node.broadcast_distance_probability
