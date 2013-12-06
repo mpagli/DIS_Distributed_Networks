@@ -47,7 +47,7 @@ if node.spring_relaxation_factor > 0
         for other_id=other_ids
             vec = reshape(node.data{other_id}.position,2,1) - mes_position;
             mes_distance = norm(vec);
-            delta = mes_distances(other_id) - mes_distance;
+            delta = (mes_distances(other_id) - mes_distance);% / node.data{node.id}.measured_noise(other_id);
             if ~isnan(delta)
                 force = force + delta*vec/mes_distance;
             end

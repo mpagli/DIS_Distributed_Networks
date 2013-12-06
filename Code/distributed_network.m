@@ -27,10 +27,10 @@ K = 10;            % minimum connectivity
 R = 20;           % average communication radius
 F = 0.1;          % proportion of network broadcasting simultaneously
 t_max = 100;     % maximum number of time-steps
-noise = 0.1;      % percentage, gaussian noise on range measurements
+noise = 0.05;      % percentage, gaussian noise on range measurements
 
 %plot_on = true;
-plot_on = true;
+plot_on = false;
 profile_on = false;
 
 broadcastingNodes = floor(N*F);  % number of simultaneously broadcasting nodes
@@ -53,8 +53,8 @@ for i = node_list
     node_data.robustquads_changed = false;
     node_data.positions_changed = false;
     
-    node_data.d_min_factor = 4; %2-sigmas
-    node_data.spring_relaxation_factor = 0.05;
+    node_data.d_min_factor = 2; %2-sigmas
+    node_data.spring_relaxation_factor = 0; %0.01;
     
     node_data.data = cell(N,1);
     for j = node_list
@@ -69,13 +69,8 @@ end
 %if(plot_on) fax=gca; else fax=[]; end;
 fax = gca;
 
-<<<<<<< HEAD
 net = f_grow_graph(N,K,R,plot_on,fax);
 %net = f_regular_net(N,K,R,plot_on,fax);
-=======
-%net = f_grow_graph(N,K,R,plot_on,fax);
-net = f_grow_graph(N,K,R,plot_on,fax);
->>>>>>> cf2fc03d276ec5f56db5b4d6e27b33697502f63e
 % LF: commented pause
 
 if profile_on

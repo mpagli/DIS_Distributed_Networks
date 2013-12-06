@@ -112,7 +112,7 @@ for t = 1:t_max
     if plot_on
         waitbar(t/t_max,progress,sprintf('At iteration %d/%d...',t,t_max));
     else
-        fprintf('At iteration %d/%d (SS=%0.6f)...\n',t,t_max,  cur_ss/(cur_pf-1))
+        fprintf('At iteration %d/%d (SS=%0.6f, Loc=%d)...\n',t,t_max,  cur_ss/(cur_pf-1), cur_pf)
     end
     
 end
