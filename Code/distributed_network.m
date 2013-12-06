@@ -31,6 +31,7 @@ noise = 0.05;      % percentage, gaussian noise on range measurements
 
 %plot_on = true;
 plot_on = false;
+profile_on = false;
 
 broadcastingNodes = floor(N*F);  % number of simultaneously broadcasting nodes
 
@@ -50,6 +51,8 @@ for i = node_list
     node_data.outbox = java.util.LinkedList();
     node_data.d_min_factor = 3; %2-sigmas
     node_data.distances_changed = false;
+    node_data.robustquads_changed = false;
+    node_data.positions_changed = false;
     
     node_data.data = cell(N,1);
     for j = node_list
@@ -68,7 +71,11 @@ fax = gca;
 net = f_regular_net(N,K,R,plot_on,fax);
 % LF: commented pause
 
-profile off;
+if profile_on
+    profile on;
+else
+    profile off;
+end
 
 tic
 if (plot_on)
@@ -79,7 +86,9 @@ end
 toc
 
 profile off;
-%profview;
+if profile_on
+    profview;
+end
 
 %figure
 %plotyy(iterations, positions_found, iterations, normalized_ss);
