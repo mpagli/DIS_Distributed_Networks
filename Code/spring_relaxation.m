@@ -2,8 +2,9 @@ function [pos] = spring_relaxation(pos, other_positions, other_lengths, other_va
 
 potential = @(x) spring_relaxation_potential(x, other_positions, other_lengths, other_variances);
 
-
-pos = fminunc(potential, pos);
+origw = warning ('off','optim:fminunc:SwitchingMethod');
+pos = fminunc(potential, pos, optimoptions('fminunc','Display','off'));
+warning(origw);
 
 %pos
 %other_positions

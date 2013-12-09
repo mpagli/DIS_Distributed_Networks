@@ -1,4 +1,4 @@
-function [nodes, performance_metrics] = dn_simulate(nodes, net, t_max, noise, fax)
+function [nodes, performance_nodes_localized, performance_norm_ss] = dn_simulate(nodes, net, t_max, noise, fax)
 
 plot_on = exist('fax');
 
@@ -10,7 +10,8 @@ if plot_on
     cleanup = onCleanup( @()( close( progress ) ) );
 end
 
-performance_metrics = [];
+performance_nodes_localized = [];
+performance_norm_ss = [];
     
 w=[];
 
@@ -107,7 +108,8 @@ for t = 1:t_max
         end
     end
     
-    performance_metrics = [performance_metrics; cur_pf cur_ss/(cur_pf-1)];
+    performance_nodes_localized = [performance_nodes_localized cur_pf];
+    performance_norm_ss = [performance_norm_ss cur_ss/(cur_pf-1)];
     
     if plot_on
         waitbar(t/t_max,progress,sprintf('At iteration %d/%d...',t,t_max));

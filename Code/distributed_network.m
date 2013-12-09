@@ -81,15 +81,26 @@ end
 
 tic
 if (plot_on)
-    [new_data, performance] = dn_simulate(data, net, t_max, noise, fax);
+    [new_data, performance_nodes_localized, performance_norm_ss] = dn_simulate(data, net, t_max, noise, fax);
 else
-    [new_data, performance] = dn_simulate(data, net, t_max, noise);
+    [new_data, performance_nodes_localized, performance_norm_ss] = dn_simulate(data, net, t_max, noise);
 end
 toc
 
 profile off;
 if profile_on
     profview;
+end
+
+return
+
+pnl = [];
+pnss = [];
+for i=0:0.1:1
+    rng(saved_rng);
+    [new_data, performance_nodes_localized, performance_norm_ss] = dn_simulate(data, net, t_max, noise);
+    pnl = [pnl; performance_nodes_localized];
+    pnss = [pnss; performance_norm_ss];
 end
 
 %figure
