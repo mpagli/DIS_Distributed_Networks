@@ -58,9 +58,9 @@ end
 
 tic
 if (plot_on)
-    [new_data, performance_nodes_localized, performance_norm_ss] = dn_simulate(data, net, t_max, noise, fax);
+    [new_data, performance_L, performance_sigma_p, performance_sigma_d] = dn_simulate(data, net, t_max, noise, fax);
 else
-    [new_data, performance_nodes_localized, performance_norm_ss] = dn_simulate(data, net, t_max, noise);
+    [new_data, performance_L, performance_sigma_p, performance_sigma_d] = dn_simulate(data, net, t_max, noise);
 end
 toc
 

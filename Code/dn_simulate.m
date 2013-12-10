@@ -1,5 +1,5 @@
-function [nodes, performance_nodes_localized, performance_norm_ss] = dn_simulate(nodes, net, t_max, noise, fax)
-%[nodes, performance_nodes_localized, performance_norm_ss] = dn_simulate(nodes, net, t_max, noise, fax)
+function [nodes, performance_L, performance_sigma_p, performance_sigma_d] = dn_simulate(nodes, net, t_max, noise, fax)
+% [nodes, performance_L, performance_sigma_p, performance_sigma_d] = dn_simulate(nodes, net, t_max, noise, fax)
 %
 % Launch a simulation of nodes on the network.
 %
@@ -12,8 +12,9 @@ function [nodes, performance_nodes_localized, performance_norm_ss] = dn_simulate
 %
 % Output values:
 %  - nodes: new state of the nodes
-%  - performance_nodes_localized: number of nodes localized at each iteration (vector of length t_max)
-%  - performance_norm_ss: normalized sum of the squares of the distances between the estimated position and the correct location of the node (vector of length t_max)
+%  - performance_L: number of nodes localized at each iteration (vector of length t_max)
+%  - performance_sigma_p: normalized sum of the squares of the distances between the estimated position and the correct location of the node (vector of length t_max)
+%  - performance_sigma_d: normalized sum of the squares of the difference between the real and the estimated distances (vector of length t_max)
 
 plot_on = exist('fax');
 
@@ -26,9 +27,10 @@ if plot_on
     cleanup = onCleanup( @()( close( progress ) ) );
 end
 
-performance_nodes_localized = [];
-performance_norm_ss = [];
-    
+performance_L = [];
+performance_sigma_p = [];
+performance_sigma_d = [];
+
 w=[];
 
 % Start time (run until t_max)
@@ -122,14 +124,34 @@ for t = 1:t_max
         end
     end
     
-    performance_nodes_localized = [performance_nodes_localized cur_pf];
-    performance_norm_ss = [performance_norm_ss cur_ss/(cur_pf-1)];
+    %estimate sigma_d
+    [vi0,vi1]=ind2sub(size(net.neighborhood),find(net.neighborhood==1));
+    
+    cur_sd = 0;
+    cur_sdc = 0;
+    
+    for i0 = vi0'
+        for i1 = vi1'
+            if i0 < i1
+                real_distance = net.dist(i0, i1);
+                estimated_distance = norm(reshape(nodes{i0}.data{i0}.position,2,1) - reshape(nodes{i1}.data{i1}.position,2,1));
+                if ~isnan(estimated_distance)
+                    cur_sd = cur_sd + (real_distance - estimated_distance).^2;
+                    cur_sdc = cur_sdc + 1;
+                end
+            end
+        end
+    end
+    
+    performance_L = [performance_L cur_pf];
+    performance_sigma_p = [performance_sigma_p cur_ss/cur_pf];
+    performance_sigma_d = [performance_sigma_d cur_sd/cur_sdc];
     
     %Display some progress indication
     if plot_on
         waitbar(t/t_max,progress,sprintf('At iteration %d/%d...',t,t_max));
     else
-        fprintf('At iteration %d/%d (SS=%0.6f, Loc=%d)...\n',t,t_max,  cur_ss/(cur_pf-1), cur_pf)
+        fprintf('At iteration %d/%d (L=%d, sigma_p=%0.6f, sigma_d=%0.6f)...\n',t,t_max, cur_pf, cur_ss/cur_pf, cur_sd/cur_sdc)
     end
     
 end
