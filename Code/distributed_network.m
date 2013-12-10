@@ -54,7 +54,7 @@ for i = node_list
     node_data.positions_changed = false;
     
     node_data.d_min_factor = 1.5; %2-sigmas
-    node_data.spring_relaxation_factor = 0.7; % 0.1;
+    node_data.spring_relaxation_factor = 0.1; % 0.1;
     
     node_data.data = cell(N,1);
     for j = node_list

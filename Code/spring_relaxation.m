@@ -19,6 +19,8 @@ function [pot] = spring_relaxation_potential(x, other_positions, other_lengths, 
         measured_vec = x - other_positions(:,i);
         measured_length = norm(measured_vec);
         wanted_length = other_lengths(i);
-        pot = pot + abs(wanted_length - measured_length)./other_variances(i);
+        x = wanted_length - measured_length;
+        k = 1./other_variances(i);
+        pot = pot + 0.5*k*x^2;
     end
     return
