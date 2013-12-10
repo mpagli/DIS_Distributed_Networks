@@ -1,6 +1,7 @@
-function [node] = node_initialize_net_position(node)
+function [node] = node_find_location_for_first_nodes(node)
+%
 
-%Check if we can update the position in special cases
+% Node 1 is always at (0,0)
 if node.id == 1
     % Initialize
     node.data{node.id}.path_length = 0;
@@ -26,6 +27,4 @@ elseif node.id==3
             [0,0,node.data{3}.distances(1),node.data{2}.position(1),node.data{2}.position(2),node.data{3}.distances(2)];
         end
     end
-else
-
 end

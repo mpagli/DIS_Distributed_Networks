@@ -1,17 +1,18 @@
 function [node] = node_timer_tick(node)
-%fprintf('[node %03d] Timer event\n',node.id);
+% node_timer_tick
+% Function called at each simulation step, in order to let the node compute its new state.
+%
+% [node] = node_timer_tick(node)
 
 if node.distances_changed
     node = node_compute_robust_quads(node);
 end
 
-%Check if we can update the position in special cases
+%Try to localize
 if node.id <= 3
-
-	node = node_initialize_net_position(node);
-
+    %The first 3 nodes are special cases.
+    node = node_find_location_for_first_nodes(node);
 else
-    % Try to localize
     if node.distances_changed || node.robustquads_changed || node.positions_changed
         node = node_find_location(node);
     end
