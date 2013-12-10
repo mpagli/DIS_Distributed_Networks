@@ -1,8 +1,9 @@
 function [node] = node_timer_tick(node)
-% node_timer_tick
-% Function called at each simulation step, in order to let the node compute its new state.
-%
 % [node] = node_timer_tick(node)
+%
+% Function called at each simulation step by dn_simulate, in order to let the node compute its new state.
+%
+% In the real world, this function would called by the main loop of the sensor.
 
 if node.distances_changed
     node = node_compute_robust_quads(node);
@@ -18,12 +19,14 @@ else
     end
 end
 
+%Compute spring relaxation if needed
 if node.spring_relaxation_factor > 0 && sum(sum(isnan(node.data{node.id}.position))) == 0
-
     my_position = reshape(node.data{node.id}.position,2,1);
     lengths = node.data{node.id}.distances;
     other_ids = find(~isnan(lengths))';
+    
     if ~isempty(other_ids)
+        %Build a list of neighbors
         other_positions = [];
         other_lengths = [];
         other_variances = [];
@@ -36,8 +39,10 @@ if node.spring_relaxation_factor > 0 && sum(sum(isnan(node.data{node.id}.positio
             end
         end
         
+        %Compute the optimal position
         new_pos = spring_relaxation(my_position, other_positions, other_lengths, other_variances);
         
+        %Then update the position with an affine combination of the points and the optimal position (avoid oscillation)
         node = node_update_position(node, node.id, (1-node.spring_relaxation_factor)*my_position + node.spring_relaxation_factor * new_pos);
     end
 end
