@@ -6,7 +6,7 @@ import java.util.LinkedList
 data = cell(N, 1);
 
 % Initialize memory for each node
-for i = node_list
+for i = 1:N
     node_data=struct();
     node_data.id = int32(i);
     node_data.N = int32(N);
@@ -22,7 +22,7 @@ for i = node_list
     node_data.spring_relaxation_factor = spring_relaxation_factor;
     
     node_data.data = cell(N,1);
-    for j = node_list
+    for j = 1:N
         node_data.data{j} = struct('distances', nan(N, 1), 'distances_n', zeros(N, 1), 'distances_M2', zeros(N, 1), 'robustquads', nan(0,0), 'position', nan(2,1), 'measured_noise', nan(N, 1), 'path_length', nan(1, 1));
     end
     

@@ -7,19 +7,16 @@
 % N        --    total number of nodes
 % K        --    minimum node connectivity
 % R        --    minimum communication radius
-% plot_on  --    sets option to plot
 %
 %%
 
 
-function [net]=f_grow_graph(N,K,R,plot_on,fax)
+function [net]=f_grow_graph(N,K,R,fax)
 
 if(~nargin)
    N = 20;
    K = 4;
    R = 20;
-   plot_on = true;
-   fax = gca;
 end
 
 % Initialization
@@ -53,7 +50,7 @@ while(net.nodeCount<N)
 end
 
 
-if plot_on
+if exist('fax','var')
     f_draw_network(fax,net);
 end
 

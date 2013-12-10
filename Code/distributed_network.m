@@ -26,7 +26,7 @@ R = 20;           % average communication radius
 F = 0.1;          % proportion of network broadcasting simultaneously
 t_max = 100;     % maximum number of time-steps
 noise = 0.1;      % percentage, gaussian noise on range measurements
-d_min_factor = 0.5;
+d_min_factor = 1.5;
 spring_relaxation_factor = 0.1;
 
 %plot_on = true;
@@ -42,7 +42,11 @@ data = dn_generate_nodes(N, F, d_min_factor, spring_relaxation_factor);
 %if(plot_on) fax=gca; else fax=[]; end;
 fax = gca;
 
-net = f_grow_graph(N,K,R,plot_on,fax);
+if plot_on
+    net = f_grow_graph(N,K,R,fax);
+else
+    net = f_grow_graph(N,K,R);
+end
 %net = f_regular_net(N,K,R,plot_on,fax);
 % LF: commented pause
 
