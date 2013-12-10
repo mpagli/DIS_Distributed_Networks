@@ -1,5 +1,6 @@
 % 02.11.2010, Amanda Prorok
 % 14.11.2013 Modified, Bahar Haghighat
+% 10.12.2013 Modified, Laurent Fasnacht (removed the plot_on, replaced by checking existence of fax)
 % DIS mini project - base code
 % Make a network of N nodes which each are connected at least K times.
 % 
