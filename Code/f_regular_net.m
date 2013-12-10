@@ -12,7 +12,7 @@
 %%
 
 
-function [net]=f_grow_graph(N,K,R,plot_on,fax)
+function [net]=f_regular_net(N,K,R,fax)
 
 % Initialization
 field = 100;              % 100x100m^2 field
@@ -48,7 +48,7 @@ for i0 = 1:N
     end
 end
 
-if plot_on
+if exist('fax','var')
     f_draw_network(fax,net);
 end
 
