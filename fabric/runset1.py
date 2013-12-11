@@ -1,5 +1,7 @@
 from fabric.api import *
+from fabric.contrib.files import exists
 from multiprocessing import Lock, Queue
+from Queue import Empty
 env.dedupe_hosts = False
 
 valid_hosts_ids = list(range(1,30))
@@ -12,18 +14,11 @@ env.roledefs = {
     'run': valid_hosts*4,
 } 
 
-jobs = [(x,x+1,y) for x in range(1,100,2) for y in [3, 5, 7, 9, 11, 13, 15, 17, 19]]
+jobs = [(x,x+1,y) for y in [3, 5, 7, 9, 11, 13, 15, 17, 19] for x in range(1,100,2)]
 
 env.work_queue = Queue()
-env.work_queue.put(jobs)
-env.DUP_LOCKER = Lock()
-
-def get_unique_index():
-    env.DUP_LOCKER.acquire()
-    result = env.UNIQUE_ID.value
-    env.UNIQUE_ID.value = result + 1
-    env.DUP_LOCKER.release()
-    return result
+for j in jobs:
+    env.work_queue.put(j)
 
 @task
 def Deploy():
@@ -43,24 +38,23 @@ def Test():
     
 @task
 def RunSet1():
-    jobs=env.jobs
     #jobs=[(1,2,3)]
     
     run('mkdir -p /home/fasnacht/set1')
     
-    while True:
-        job = env.work_queue.get_nowait()
-        jobdescfile = '/home/fasnacht/set1/.{0}'.format('-'.join(job))
-        try:
-            get(jobdescfile)
-            continue
-        except:
-            pass
+    try:
+        while True:
+            job = env.work_queue.get_nowait()
+            jobdescfile = '/home/fasnacht/set1/.' + '-'.join([str(x) for x in job])
+            if exists(jobdescfile):
+                continue
+            
+            with cd('/tmp/dis-project/Code'):
+                run('OUTDIR=/home/fasnacht/set1 IMIN={0[0]} IMAX={0[1]} K={0[2]} nice matlab -nodisplay -r "runset1; quit;"'.format(job))
         
-        with cd('/tmp/dis-project/Code'):
-            run('OUTDIR=/home/fasnacht/set1 IMIN={0[0]} IMAX={0[1]} K={0[2]} nice matlab -nodisplay -r "runset1; quit;"'.format(jobs[idx]))
-    
-        run('touch {0}'.format(jobdescfile))
+            run('touch {0}'.format(jobdescfile))
+    except Empty:
+        pass
 
 if __name__ == '__main__':
     import sys
