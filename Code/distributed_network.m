@@ -21,16 +21,16 @@ end
 
 % Initialize network
 N = 20;           % number of nodes
-K = 10;            % minimum connectivity
+K = 19;            % minimum connectivity
 R = 20;           % average communication radius
-F = 0.1;          % proportion of network broadcasting simultaneously
+F = 0.2;          % proportion of network broadcasting simultaneously
 t_max = 100;     % maximum number of time-steps
 noise = 0.1;      % percentage, gaussian noise on range measurements
-d_min_factor = 1.5;
-spring_relaxation_factor = 0.1;
+d_min_factor = 1.0;
+spring_relaxation_factor = 0;
 
 %plot_on = true;
-plot_on = false;
+plot_on = true;
 profile_on = false;
 
 node_list = int32(1:N);
@@ -40,9 +40,9 @@ data = dn_generate_nodes(N, F, d_min_factor, spring_relaxation_factor);
 
 % Create network and plot it
 %if(plot_on) fax=gca; else fax=[]; end;
-fax = gca;
 
 if plot_on
+    fax = gca;
     net = f_grow_graph(N,K,R,fax);
 else
     net = f_grow_graph(N,K,R);
