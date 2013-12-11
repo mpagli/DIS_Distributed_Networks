@@ -37,20 +37,20 @@ def Test():
     #print env
     
 @task
-def RunSet2():
+def RunSet3():
     #jobs=[(1,2,3)]
     
-    run('mkdir -p /home/fasnacht/set2')
+    run('mkdir -p /home/fasnacht/set3')
     
     try:
         while True:
             job = env.work_queue.get_nowait()
-            jobdescfile = '/home/fasnacht/set2/.' + '-'.join([str(x) for x in job])
+            jobdescfile = '/home/fasnacht/set3/.' + '-'.join([str(x) for x in job])
             if exists(jobdescfile):
                 continue
             
             with cd('/tmp/dis-project/Code'):
-                run('OUTDIR=/home/fasnacht/set2 IMIN={0[0]} IMAX={0[1]} F={0[2]} nice matlab -nodisplay -r "runset2; quit;"'.format(job))
+                run('OUTDIR=/home/fasnacht/set3 IMIN={0[0]} IMAX={0[1]} NOISE={0[2]} nice matlab -nodisplay -r "runset3; quit;"'.format(job))
         
             run('touch {0}'.format(jobdescfile))
     except Empty:
