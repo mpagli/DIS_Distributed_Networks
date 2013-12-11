@@ -19,7 +19,7 @@ l_spring_relaxation_factor = [0 0.1];
 
 rng('shuffle');
 
-prefix = 'results/set1/result';
+prefix = [getenv('OUTDIR') '/result'];
 
 for N = l_N
 for K = l_K

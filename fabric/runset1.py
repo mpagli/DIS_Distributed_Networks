@@ -1,5 +1,5 @@
 from fabric.api import *
-from multiprocessing import Lock, Value
+from multiprocessing import Lock, Queue
 env.dedupe_hosts = False
 
 valid_hosts_ids = list(range(1,30))
@@ -12,10 +12,11 @@ env.roledefs = {
     'run': valid_hosts*4,
 } 
 
-env.UNIQUE_ID = Value('i',0)
-env.DUP_LOCKER = Lock()
+jobs = [(x,x+1,y) for x in range(1,100,2) for y in [3, 5, 7, 9, 11, 13, 15, 17, 19]]
 
-env.jobs = [(x,x+9,y) for x in range(1,100,10) for y in [3, 5, 7, 9, 11, 13, 15, 17, 19]]
+env.work_queue = Queue()
+env.work_queue.put(jobs)
+env.DUP_LOCKER = Lock()
 
 def get_unique_index():
     env.DUP_LOCKER.acquire()
@@ -44,16 +45,22 @@ def Test():
 def RunSet1():
     jobs=env.jobs
     #jobs=[(1,2,3)]
-    assert len(env.all_hosts)>=len(jobs),"We need %d hosts (%d provided)"%(len(jobs),len(env.all_hosts))
-    idx=get_unique_index()
-    if idx >= len(jobs):
-        return
-    run('mkdir -p /home/fasnacht/set1')
-    with cd('/tmp/dis-project/Code'):
-        run('mkdir -p results/set1')
-        run('IMIN={0[0]} IMAX={0[1]} K={0[2]} nice matlab -nodisplay -r "runset1; quit;"'.format(jobs[idx]))
     
-    run('cp /tmp/dis-project/Code/results/set1/*.mat /home/fasnacht/set1')
+    run('mkdir -p /home/fasnacht/set1')
+    
+    while True:
+        job = env.work_queue.get_nowait()
+        jobdescfile = '/home/fasnacht/set1/.{0}'.format('-'.join(job))
+        try:
+            get(jobdescfile)
+            continue
+        except:
+            pass
+        
+        with cd('/tmp/dis-project/Code'):
+            run('OUTDIR=/home/fasnacht/set1 IMIN={0[0]} IMAX={0[1]} K={0[2]} nice matlab -nodisplay -r "runset1; quit;"'.format(jobs[idx]))
+    
+        run('touch {0}'.format(jobdescfile))
 
 if __name__ == '__main__':
     import sys
