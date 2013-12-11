@@ -1,9 +1,9 @@
-exps = 1:100;
+exps = str2num(getenv('IMIN')):str2num(getenv('IMAX'))
 
 % number of nodes
 l_N = 20;
 % minimum connectivity
-l_K = [3 5 7 9 11 13 15 17 19];
+l_K = str2num(getenv('K'));
 % average communication radius
 l_R = 20;
 % proportion of network broadcasting simultaneously
