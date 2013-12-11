@@ -45,10 +45,10 @@ data = dn_generate_nodes(N, F, d_min_factor, spring_relaxation_factor);
 rng(saved_rng);
 
 tic;
-[new_data, performance_nodes_localized, performance_norm_ss] = dn_simulate(data, net, t_max, noise);
+[new_data, performance_L, performance_sigma_p, performance_sigma_d] = dn_simulate(data, net, t_max, noise);
 toc;
 
-save(fname, 'i', 'N', 'K', 'R', 'F', 't_max', 'noise', 'd_min_factor', 'spring_relaxation_factor', 'data', 'new_data', 'saved_rng', 'net');
+save(fname, 'i', 'N', 'K', 'R', 'F', 't_max', 'noise', 'd_min_factor', 'spring_relaxation_factor', 'data', 'new_data', 'saved_rng', 'net', 'performance_L', 'performance_sigma_p', 'performance_sigma_d');
 
 
 end; end; end; end; end; end; end; end
