@@ -69,12 +69,16 @@ for t = 1:t_max
     %mat_transform * [computed pos] + translation = net.location
     %Ex for node 3:
     %mat_transform * reshape(nodes{3}.data{3}.position,2,1)  + translation;
-    translation = reshape(net.location(1,:),2,1);
-    theta = atan2(net.location(2,2)-net.location(1,2),net.location(2,1)-net.location(1,1));
+    a1 = nodes{1}.data{1}.anchor(1);
+    a2 = nodes{1}.data{1}.anchor(2);
+    a3 = nodes{1}.data{1}.anchor(3);
+    
+    translation = reshape(net.location(a1,:),2,1);
+    theta = atan2(net.location(a2,2)-net.location(a1,2),net.location(a2,1)-net.location(a1,1));
     mat_transform = [cos(theta), -sin(theta); sin(theta), cos(theta)];
 
-    v3 = reshape(nodes{3}.data{3}.position,2,1);
-    real_v3 = reshape(net.location(3,:),2,1);
+    v3 = reshape(nodes{a3}.data{a3}.position,2,1);
+    real_v3 = reshape(net.location(a3,:),2,1);
 
     %Maybe we have to take the symmetry to have the right orientation
     if norm(mat_transform * v3  + translation - real_v3) > norm(mat_transform * [1,0;0,-1] * v3  + translation - real_v3)

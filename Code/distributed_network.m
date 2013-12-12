@@ -21,7 +21,7 @@ end
 
 % Initialize network
 N = 20;           % number of nodes
-K = 19;            % minimum connectivity
+K = 11;            % minimum connectivity
 R = 20;           % average communication radius
 F = 0.2;          % proportion of network broadcasting simultaneously
 t_max = 100;     % maximum number of time-steps

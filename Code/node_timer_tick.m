@@ -10,7 +10,7 @@ if node.distances_changed
 end
 
 %Try to localize
-if node.id <= 3
+if node.anchor > 0
     %The first 3 nodes are special cases.
     node = node_find_location_for_first_nodes(node);
 else
