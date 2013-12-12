@@ -80,6 +80,9 @@ for t = 1:t_max
     a2 = nodes{reference_point}.data{reference_point}.anchor(2);
     a3 = nodes{reference_point}.data{reference_point}.anchor(3);
 
+    base_anchor = [a1 a2 a3];
+    
+    %define the anchor to default values to avoid problems after
     if isnan(a1)
         a1 = 1;
     end
@@ -89,8 +92,6 @@ for t = 1:t_max
     if isnan(a3)
         a3 = 3;
     end
-    
-    base_anchor = [a1 a2 a3];
     
     translation = reshape(net.location(a1,:),2,1);
     theta = atan2(net.location(a2,2)-net.location(a1,2),net.location(a2,1)-net.location(a1,1));
@@ -127,7 +128,7 @@ for t = 1:t_max
         node_positions = [];
         for i = 1:N
             %Ignore nodes anchored in another coordinate system
-            if ~isequal(base_anchor, nodes{i}.data{i}.anchor(1:3))
+            if ~isequal(base_anchor, nodes{i}.data{i}.anchor(1:3)) || any(isnan(base_anchor))
                 continue
             end
             node_position = get_position_for(i);
@@ -148,7 +149,7 @@ for t = 1:t_max
     cur_ss = 0;
     for id = 1:N
         %Ignore nodes anchored in another coordinate system
-        if ~isequal(base_anchor, nodes{id}.data{id}.anchor(1:3))
+        if ~isequal(base_anchor, nodes{id}.data{id}.anchor(1:3)) || any(isnan(base_anchor))
             continue
         end
         if ~any(isnan(nodes{id}.data{id}.position))
@@ -164,7 +165,13 @@ for t = 1:t_max
     cur_sdc = 0;
     
     for i0 = vi0'
+        if ~isequal(base_anchor, nodes{i0}.data{i0}.anchor(1:3)) || any(isnan(base_anchor))
+            continue
+        end
         for i1 = vi1'
+            if ~isequal(base_anchor, nodes{i1}.data{i1}.anchor(1:3)) || any(isnan(base_anchor))
+                continue
+            end
             if i0 < i1
                 real_distance = net.dist(i0, i1);
                 estimated_distance = norm(reshape(nodes{i0}.data{i0}.position,2,1) - reshape(nodes{i1}.data{i1}.position,2,1));

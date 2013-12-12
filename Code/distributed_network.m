@@ -30,7 +30,7 @@ d_min_factor = 1.0;
 spring_relaxation_factor = 0.0;
 
 %plot_on = true;
-plot_on = true;
+plot_on = false;
 profile_on = false;
 
 node_list = int32(1:N);

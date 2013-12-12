@@ -6,6 +6,7 @@ n_robustquads = size(node.data{id}.robustquads,1);
 
 besttri=-Inf;
 bestnodes=[nan nan];
+
 for i = 1:n_robustquads
     for j = 1:3
         for k=j+1:4
@@ -19,7 +20,7 @@ for i = 1:n_robustquads
                 continue
             end
             
-            djk = node.data{nj}.distances(nl);
+            djk = node.data{nj}.distances(nk);
             dkl = node.data{nk}.distances(nl);
             dlj = node.data{nl}.distances(nj);
             

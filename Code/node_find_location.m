@@ -20,8 +20,12 @@ for i = 1:size(robustquads,1)
             nqs = nqs; % no change
         else
             nqs = nqs - node.data{robustquads(i,j)}.anchor(5);
-            if any(isnan(node.data{robustquads(i,j)}.position))
+            if any(isnan(node.data{robustquads(i,j)}.position));
                 nqs = nqs - Inf;
+            end
+            %Bonus if we're on an anchor
+            if any(node.data{node.id}.anchor == robustquads(i,j))
+                nqs = nqs + 1;
             end
         end
     end
@@ -30,6 +34,8 @@ for i = 1:size(robustquads,1)
 end
 
 [quadsscore, quadsidx] = sort(quadsscore, 'descend');
+
+
 
 %If the best score is -infinity, then it's we cannot localize
 if quadsscore(1) == -Inf
