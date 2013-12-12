@@ -43,13 +43,6 @@ for i = 1:N
     node_data.anchor = 0;
     node_data.use_anchors = use_anchors;
     
-    if ~use_anchors
-        node_data.anchor = find(default_anchors==i);
-        if isempty(node_data.anchor)
-            node_data.anchor = 0;
-        end
-    end
-    
     node_data.data = cell(N,1);
     for j = 1:N
         %Data for each node.
@@ -60,11 +53,22 @@ for i = 1:N
         %position: estimate of the position of the node
         %measured_noise: estimate of the noise in the measurement between the nodes
         %path_length: shortest path length from point 1 to this one.
-        node_data.data{j} = struct('distances', nan(N, 1), 'distances_n', zeros(N, 1), 'distances_M2', zeros(N, 1), 'robustquads', nan(0,0), 'position', nan(2,1), 'measured_noise', nan(N, 1), 'path_length', nan(1, 1), 'anchor', nan(1,4));
-        if ~use_anchors
-            node_data.data{j}.anchor=[default_anchors, Inf];
+        node_data.data{j} = struct('distances', nan(N, 1), 'distances_n', zeros(N, 1), 'distances_M2', zeros(N, 1), 'robustquads', nan(0,0), 'position', nan(2,1), 'measured_noise', nan(N, 1), 'path_length', nan(1, 1), 'anchor', nan(1,5));
+    end
+    
+    if ~use_anchors
+        node_data.anchor = find(default_anchors==i);
+        if isempty(node_data.anchor)
+            node_data.anchor = 0;
+        end
+        %node_data.data{i}.anchor: [anchor1 anchor2 anchor3 score distance]
+        if i == default_anchors(1)
+            node_data.data{i}.anchor=[default_anchors, Inf, 0];
+        else
+            node_data.data{i}.anchor=[default_anchors, Inf, Inf];
         end
     end
+    
     
     data{i} = node_data;
 end
