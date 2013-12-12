@@ -45,7 +45,7 @@ end
 selectedQuad = robustquads(quadsidx(1),:);
 selectedQuad = selectedQuad(find(selectedQuad~=node.id));
 
-fprintf('Update position of %d using positions from %d %d %d\n',node.id,selectedQuad);
+%fprintf('Update position of %d using positions from %d %d %d\n',node.id,selectedQuad);
 
 %estimate the position of the node using trilateration
 Pa = node.data{selectedQuad(1)}.position;
