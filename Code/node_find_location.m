@@ -19,11 +19,12 @@ hopList = zeros(size(robustquads));
 %we create the hopList
 for i = 1 : length(robustquads(:,1))
    for j = 1:4
-       if robustquads(i,j) == node.id
+       %TODO: don't localize nodes not in the same referential
+       if robustquads(i,j) == node.id || false
            robustquads(i,j) = NaN;
            hopList(i,j)     = NaN;
        else
-           hopList(i,j) = node.data{robustquads(i,j)}.path_length;
+           hopList(i,j) = node.data{robustquads(i,j)}.anchor(5);
        end
    end
 end

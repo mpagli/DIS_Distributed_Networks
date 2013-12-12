@@ -1,4 +1,4 @@
-function [data] = dn_generate_nodes(N, broadcast_distance_probability, d_min_factor, spring_relaxation_factor)
+function [data] = dn_generate_nodes(N, broadcast_distance_probability, d_min_factor, spring_relaxation_factor, anchors)
 % [data] = dn_generate_nodes(N, broadcast_distance_probability, d_min_factor, spring_relaxation_factor)
 %
 % Generate a cell array of nodes.
@@ -18,8 +18,13 @@ import java.util.LinkedList
 % Each node stores data
 data = cell(N, 1);
 
-use_anchors = false;
-default_anchors = [1 2 3];
+anchors = [1 2 3];
+if exist('anchors', 'var')
+    fixed_anchors = true;
+else
+    fixed_anchors = false;
+end
+
 
 % Initialize memory for each node
 for i = 1:N
@@ -32,6 +37,7 @@ for i = 1:N
     node_data.distances_changed = false; %Received a message changing distances of a neighbor?
     node_data.robustquads_changed = false; %Received a message changing robust quads of a neighbor?
     node_data.positions_changed = false; %Received a message changing position of a neighbor?
+    node_data.anchor_changed = false; %Received a message changing anchors of a neighbor?
     
     node_data.d_min_factor = d_min_factor;
     node_data.spring_relaxation_factor = spring_relaxation_factor;
@@ -41,7 +47,7 @@ for i = 1:N
     %2 anchor for second node
     %3 anchor for third node
     node_data.anchor = 0;
-    node_data.use_anchors = use_anchors;
+    node_data.fixed_anchors = fixed_anchors;
     
     node_data.data = cell(N,1);
     for j = 1:N
@@ -52,20 +58,20 @@ for i = 1:N
         %robustquads: list of robust quads containing the node. Each row is a robust quads, and is sorted wrt to node id
         %position: estimate of the position of the node
         %measured_noise: estimate of the noise in the measurement between the nodes
-        %path_length: shortest path length from point 1 to this one.
-        node_data.data{j} = struct('distances', nan(N, 1), 'distances_n', zeros(N, 1), 'distances_M2', zeros(N, 1), 'robustquads', nan(0,0), 'position', nan(2,1), 'measured_noise', nan(N, 1), 'path_length', nan(1, 1), 'anchor', nan(1,5));
+        %anchor: [anchor1 anchor2 anchor3 score path_length_from_anchor1]
+        node_data.data{j} = struct('distances', nan(N, 1), 'distances_n', zeros(N, 1), 'distances_M2', zeros(N, 1), 'robustquads', nan(0,0), 'position', nan(2,1), 'measured_noise', nan(N, 1), 'anchor', nan(1,5));
     end
     
-    if ~use_anchors
-        node_data.anchor = find(default_anchors==i);
+    if fixed_anchors
+        node_data.anchor = find(anchors==i);
         if isempty(node_data.anchor)
             node_data.anchor = 0;
         end
         %node_data.data{i}.anchor: [anchor1 anchor2 anchor3 score distance]
-        if i == default_anchors(1)
-            node_data.data{i}.anchor=[default_anchors, Inf, 0];
+        if i == anchors(1)
+            node_data.data{i}.anchor=[anchors, Inf, 0];
         else
-            node_data.data{i}.anchor=[default_anchors, Inf, Inf];
+            node_data.data{i}.anchor=[anchors, Inf, Inf];
         end
     end
     

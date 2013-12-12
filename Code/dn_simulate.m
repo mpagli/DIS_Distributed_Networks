@@ -73,6 +73,16 @@ for t = 1:t_max
     a2 = nodes{1}.data{1}.anchor(2);
     a3 = nodes{1}.data{1}.anchor(3);
     
+    if isnan(a1)
+        a1 = 1;
+    end
+    if isnan(a2)
+        a2 = 2;
+    end
+    if isnan(a3)
+        a3 = 3;
+    end
+    
     translation = reshape(net.location(a1,:),2,1);
     theta = atan2(net.location(a2,2)-net.location(a1,2),net.location(a2,1)-net.location(a1,1));
     mat_transform = [cos(theta), -sin(theta); sin(theta), cos(theta)];

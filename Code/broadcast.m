@@ -6,7 +6,7 @@ function [node] = broadcast(node, message_type, message_data)
 %
 % Parameters:
 %  - node: sender node
-%  - message_type: string describing the type of message (one of 'path_length','position','distances','robustquads')
+%  - message_type: string describing the type of message (one of 'anchor','position','distances','robustquads')
 %  - message_data: matrix of the content of the message (size depends on the type)
 %
 % Output value:

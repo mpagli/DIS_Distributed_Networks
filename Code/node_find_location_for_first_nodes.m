@@ -7,7 +7,6 @@ anchor3 = node.data{node.id}.anchor(3);
 % Node 1 is always at (0,0)
 if node.anchor == 1
     % Initialize
-    node.data{node.id}.path_length = 0;
     node.data{node.id}.position = [0,0];
     
 %Node = 2 and known distance to 1

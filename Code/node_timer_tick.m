@@ -9,6 +9,36 @@ if node.distances_changed
     node = node_compute_robust_quads(node);
 end
 
+if ~node.fixed_anchors
+    if isnan(node.data{node.id}.anchor(1)) || node.data{node.id}.anchor(1)==node.id
+        my_anchor = [node_compute_anchor_score(node) 0];
+        node = node_update_anchor(node, node.id, my_anchor);
+    end
+end
+    
+
+if node.anchor_changed
+    selected_anchor = node.id;
+    
+    for i = 1:node.N
+        if i~=node.id
+            %compare score
+            if node.data{i}.anchor(4) > node.data{selected_anchor}.anchor(4) || (isequal(node.data{i}.anchor(1:3), node.data{selected_anchor}.anchor(1:3)) && node.data{i}.anchor(5) < node.data{selected_anchor}.anchor(5))
+                selected_anchor = i;
+            end
+        end
+    end
+    if selected_anchor ~= node.id
+        coordinates_changed = ~isequal(node.data{node.id}.anchor(1:3), node.data{selected_anchor}.anchor(1:3));
+        if coordinates_changed
+            node = node_update_position(node, node.id, [nan nan]);
+        end
+        node.data{node.id}.anchor = node.data{selected_anchor}.anchor;
+        node.data{node.id}.anchor(5) = node.data{node.id}.anchor(5) + 1;
+        node.anchor_changed = false;
+    end
+end
+
 %Try to localize
 if node.anchor > 0
     %The first 3 nodes are special cases.
@@ -57,15 +87,13 @@ node.positions_changed = false;
 if rand() < node.broadcast_distance_probability
     node = node_update_distances(node, node.id, node.measured_distances);
     
-    %If the path length is known, broadcast it
-    if isnan(node.data{node.id}.path_length) == 0
-        node = broadcast(node, 'path_length', node.data{node.id}.path_length);
-    end
-    
     %If our position is known, broadcast it
     if any(isnan(node.data{node.id}.position(:))) == 0
         node = broadcast(node, 'position', node.data{node.id}.position);
     end
+    
+    %Broadcast anchor
+    node = broadcast(node, 'anchor', node.data{node.id}.anchor);
 end
 
 
