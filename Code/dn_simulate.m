@@ -69,10 +69,17 @@ for t = 1:t_max
     %mat_transform * [computed pos] + translation = net.location
     %Ex for node 3:
     %mat_transform * reshape(nodes{3}.data{3}.position,2,1)  + translation;
-    a1 = nodes{1}.data{1}.anchor(1);
-    a2 = nodes{1}.data{1}.anchor(2);
-    a3 = nodes{1}.data{1}.anchor(3);
+    reference_point = 1;
+    for i = node_list
+        if nodes{reference_point}.data{reference_point}.anchor(4) < nodes{i}.data{i}.anchor(4)
+            reference_point = i;
+        end
+    end
     
+    a1 = nodes{reference_point}.data{reference_point}.anchor(1);
+    a2 = nodes{reference_point}.data{reference_point}.anchor(2);
+    a3 = nodes{reference_point}.data{reference_point}.anchor(3);
+
     if isnan(a1)
         a1 = 1;
     end
@@ -82,6 +89,11 @@ for t = 1:t_max
     if isnan(a3)
         a3 = 3;
     end
+    
+    [a1 a2 a3]
+    reference_point
+    %nodes{a1}
+    %nodes{a1}.data{a1}
     
     translation = reshape(net.location(a1,:),2,1);
     theta = atan2(net.location(a2,2)-net.location(a1,2),net.location(a2,1)-net.location(a1,1));

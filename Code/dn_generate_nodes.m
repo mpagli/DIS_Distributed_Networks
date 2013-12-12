@@ -18,7 +18,7 @@ import java.util.LinkedList
 % Each node stores data
 data = cell(N, 1);
 
-anchors = [1 2 3];
+%anchors = [1 2 3];
 if exist('anchors', 'var')
     fixed_anchors = true;
 else

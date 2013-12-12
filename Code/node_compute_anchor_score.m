@@ -27,7 +27,7 @@ for i = 1:n_robustquads
                     acos((+djk.^2 - dkl.^2 + dlj.^2) / (2*djk*dlj));
                     acos((+djk.^2 + dkl.^2 - dlj.^2) / (2*djk*dkl))];
                     
-            triscore = sin(min(angles)) + max([dkl, dlj])/max(node.data{nl}.distances);
+            triscore = sin(min(angles)) + (sum(sum(node.data{id}.robustquads == nj)) + sum(sum(node.data{id}.robustquads == nk)))/(2*n_robustquads);
             if triscore > besttri
                 besttri = triscore;
                 if dkl > dlj

@@ -20,7 +20,7 @@ hopList = zeros(size(robustquads));
 for i = 1 : length(robustquads(:,1))
    for j = 1:4
        %TODO: don't localize nodes not in the same referential
-       if robustquads(i,j) == node.id || false
+       if robustquads(i,j) == node.id
            robustquads(i,j) = NaN;
            hopList(i,j)     = NaN;
        else
@@ -28,6 +28,8 @@ for i = 1 : length(robustquads(:,1))
        end
    end
 end
+
+%|| ~isequal(node.data{robustquads(i,j)}.anchor(1:3), node.data{node.id}.anchor(1:3))
 
 %remove the robustQuads that do not contain enough information (no position or no pathLength)
 for i = 1 : length(robustquads(:,1))

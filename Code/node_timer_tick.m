@@ -9,33 +9,49 @@ if node.distances_changed
     node = node_compute_robust_quads(node);
 end
 
-if ~node.fixed_anchors
-    if isnan(node.data{node.id}.anchor(1)) || node.data{node.id}.anchor(1)==node.id
+if isnan(node.data{node.id}.anchor(1)) || node.data{node.id}.anchor(1)==node.id || node.anchor_changed
+    if node.fixed_anchors
+        my_anchor = node.data{node.id}.anchor
+    else
         my_anchor = [node_compute_anchor_score(node) 0];
-        node = node_update_anchor(node, node.id, my_anchor);
     end
-end
     
-
-if node.anchor_changed
     selected_anchor = node.id;
+    selected_anchor_data = my_anchor;
     
     for i = 1:node.N
         if i~=node.id
-            %compare score
-            if node.data{i}.anchor(4) > node.data{selected_anchor}.anchor(4) || (isequal(node.data{i}.anchor(1:3), node.data{selected_anchor}.anchor(1:3)) && node.data{i}.anchor(5) < node.data{selected_anchor}.anchor(5))
-                selected_anchor = i;
+            %if score is better or we have the same nodes, but a shorter path
+            if node.data{i}.anchor(4) > selected_anchor_data(4) || (isequal(node.data{i}.anchor(1:3), selected_anchor_data(1:3)) && node.data{i}.anchor(5) < selected_anchor_data(5))
+                if node.data{i}.anchor(1) ~= node.id && node.data{i}.anchor(4) > 0
+                    selected_anchor = i;
+                    selected_anchor_data = node.data{i}.anchor;
+                end
             end
         end
     end
-    if selected_anchor ~= node.id
-        coordinates_changed = ~isequal(node.data{node.id}.anchor(1:3), node.data{selected_anchor}.anchor(1:3));
+    
+    %If the score of ourselves is better than the best anchor found
+    %or we don't have any anchor yet
+    %if my_anchor(4) > selected_anchor_data.anchor(4) || isnan(node.data{node.id}.anchor(1))
+    %    node = node_update_anchor(node, node.id, my_anchor);
+    %if selected_anchor ~= node.id
+        coordinates_changed = ~isequal(node.data{node.id}.anchor(1:3), selected_anchor_data(1:3));
         if coordinates_changed
-            node = node_update_position(node, node.id, [nan nan]);
+            node.data{node.id}.position = [nan nan];
         end
-        node.data{node.id}.anchor = node.data{selected_anchor}.anchor;
+        node.data{node.id}.anchor = selected_anchor_data;
         node.data{node.id}.anchor(5) = node.data{node.id}.anchor(5) + 1;
-        node.anchor_changed = false;
+        fprintf('Anchor for %d: %d %d %d\n',node.id,selected_anchor_data(1:3));
+    %end
+end
+
+if node.anchor_changed
+    node.anchor_changed = false;
+
+    node.anchor = find(node.data{node.id}.anchor==node.id);
+    if isempty(node.anchor)
+        node.anchor = 0;
     end
 end
 

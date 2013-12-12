@@ -20,17 +20,17 @@ end
 
 
 % Initialize network
-N = 20;           % number of nodes
-K = 11;            % minimum connectivity
+N = 10;           % number of nodes
+K = 9;            % minimum connectivity
 R = 20;           % average communication radius
 F = 0.2;          % proportion of network broadcasting simultaneously
-t_max = 5;     % maximum number of time-steps
+t_max = 100;     % maximum number of time-steps
 noise = 0.1;      % percentage, gaussian noise on range measurements
-d_min_factor = 1.0;
+d_min_factor = 2.0;
 spring_relaxation_factor = 0;
 
 %plot_on = true;
-plot_on = true;
+plot_on = false;
 profile_on = false;
 
 node_list = int32(1:N);
