@@ -90,10 +90,7 @@ for t = 1:t_max
         a3 = 3;
     end
     
-    [a1 a2 a3]
-    reference_point
-    %nodes{a1}
-    %nodes{a1}.data{a1}
+    base_anchor = [a1 a2 a3];
     
     translation = reshape(net.location(a1,:),2,1);
     theta = atan2(net.location(a2,2)-net.location(a1,2),net.location(a2,1)-net.location(a1,1));
@@ -129,13 +126,19 @@ for t = 1:t_max
         %Draw estimated positions of the nodes, and a line linking the correct location to the estimated position
         node_positions = [];
         for i = 1:N
+            %Ignore nodes anchored in another coordinate system
+            if ~isequal(base_anchor, nodes{i}.data{i}.anchor(1:3))
+                continue
+            end
             node_position = get_position_for(i);
             node_positions = [node_positions, node_position];
             
             li=line([net.location(i,1) node_position(1)], [net.location(i,2) node_position(2)]);
             set(li,'color', 'g', 'linewidth', 1);
         end
-        scatter(fax, node_positions(1,:),node_positions(2,:),25,'g','filled');
+        if size(node_positions, 2)>0
+            scatter(fax, node_positions(1,:),node_positions(2,:),25,'g','filled');
+        end
         
         pause(0.1)
     end
@@ -144,7 +147,11 @@ for t = 1:t_max
     cur_pf = 0;
     cur_ss = 0;
     for id = 1:N
-        if sum(isnan(nodes{id}.data{id}.position)) == 0
+        %Ignore nodes anchored in another coordinate system
+        if ~isequal(base_anchor, nodes{id}.data{id}.anchor(1:3))
+            continue
+        end
+        if ~any(isnan(nodes{id}.data{id}.position))
             cur_pf = cur_pf + 1;
             cur_ss = norm(get_position_for(id) - net.location(id,:)').^2;
         end

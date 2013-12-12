@@ -11,7 +11,7 @@ end
 
 if isnan(node.data{node.id}.anchor(1)) || node.data{node.id}.anchor(1)==node.id || node.anchor_changed
     if node.fixed_anchors
-        my_anchor = node.data{node.id}.anchor
+        my_anchor = node.data{node.id}.anchor;
     else
         my_anchor = [node_compute_anchor_score(node) 0];
     end
@@ -26,6 +26,7 @@ if isnan(node.data{node.id}.anchor(1)) || node.data{node.id}.anchor(1)==node.id 
                 if node.data{i}.anchor(1) ~= node.id && node.data{i}.anchor(4) > 0
                     selected_anchor = i;
                     selected_anchor_data = node.data{i}.anchor;
+                    selected_anchor_data(5) = selected_anchor_data(5)+1;
                 end
             end
         end
@@ -41,8 +42,7 @@ if isnan(node.data{node.id}.anchor(1)) || node.data{node.id}.anchor(1)==node.id 
             node.data{node.id}.position = [nan nan];
         end
         node.data{node.id}.anchor = selected_anchor_data;
-        node.data{node.id}.anchor(5) = node.data{node.id}.anchor(5) + 1;
-        fprintf('Anchor for %d: %d %d %d\n',node.id,selected_anchor_data(1:3));
+        %fprintf('Anchor for %d: %d %d %d\n',node.id,selected_anchor_data(1:3));
     %end
 end
 
