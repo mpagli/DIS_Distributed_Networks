@@ -32,7 +32,7 @@
 }
 
 
-\author{Laurent Fasnacht Matteo Pagliardini Bernard Maccari% <-this % stops a space
+\author{Laurent Fasnacht, Matteo Pagliardini, Bernard Maccari% <-this % stops a space
 %\thanks{*This work was not supported by any organization}% <-this % stops a space
 %\thanks{$^{1}$Albert Author is with Faculty of Electrical Engineering, Mathematics and Computer Science,
 %        University of Twente, 7500 AE Enschede, The Netherlands
@@ -54,35 +54,61 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
-This paper presents an implementation of a distributed algorithm for localizing static sensor nodes in a two-dimensional network. Nodes can sense noisy distances to neighboring nodes and communicate asynchronously with them. Our method follow the work of David Moore $et$ $al.$ \cite{MooreTeller}. We evaluate our method in term of speed of convergence and precision of the estimated positions. \\
-Using simulation we show that this method approximates well the position in a fairly noisy environment. We also show the robustness of the method against perturbations such as nodes displacements. The algorithm is able to cleverly select anchor points and thus is adequat for applications where the user has no control over nodes' position. Finally the algorithm is fully distributed.
-moo\end{abstract}
+This paper presents an implementation of a fully distributed algorithm for localizing static sensor nodes relative to each other in a random two-dimensional network. Nodes can sense noisy distances to neighboring nodes and communicate asynchronously with them. \\
+Our method follow the work of David Moore \emph{et al.} \cite{MooreTeller}, which uses robust quadrilaterals and trilateration to localize nodes, relative to fixed anchors. We extend this method to allow nodes to select a good set of anchors, and to handle different variances for each measurement. \\
+Using simulation, we evaluate our method in term of speed of convergence and precision of the estimated positions. We show that this method is robust even in a very noisy environment, and that it's able to relocalize moved nodes quickly.\\
+\end{abstract}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{INTRODUCTION}
+\section{Introduction}
 
-Self-localization is a fundamental need in networks. With numerous military and civilian applications such as environmental monitoring or surveillance.  Distributed algorithms offer a way to divide the computational burden and to minimize the overall cost of communication. It also greatly enhances the robustness of the overall system. 
+Self-localization is a fundamental need in networks, which has numerous applications such as environmental monitoring or surveillance. Absolute localization (GPS for instance) is often unavailable, because of cost or energy constraints. However, relative localization, which is done using local distance measurements between nodes may be enough. It has to be made in a distributed way in order to minimize communications and computation, which are energy-consuming. Relative localization in a distributed way is non-trivial, since each node has only a very limited knowledge of the system, but also provides robustness, since no node is a single point of failure.
 
-We present a solution to localize a network of static sensor nodes. The nodes can sense noisy distances to neighboring nodes and are also capable of communicating with their neighbors. We consider the quality of the algorithm looking at several criteria such as precision, speed of convergence, stability, resistance to perturbations, scalability and computational cost. A good localization algorithm has to balance all of these aspects.
+In this report, we will try to locate nodes in a 2D network, in which nodes can measure a noisy distance to their neighbors.
 
-The localization problem is non-trivial since each node pocesses only a very limited knowledge of the system and the solution pool for a node might be large. This is emphasized when the noise over measurement increases. Another difficulty comes from the lack of control over the nodes' position which generate additional difficulties concerning the choice of initials anchor points. Finally the entire system being distributed we have very limited communications abilities. 
+The basic idea would be to use trilateration to localize a node. However, this method is very sensitive to noise, as noise produces flex and flip ambiguities (see figure 3 in \cite{MooreTeller}). Our solution is based on the idea of David Moore \emph{et al.} \cite{MooreTeller}, which restricts trilateration to happen in \emph{robust quadrilaterals}. A \emph{robust quadrilateral} is a quadrilateral $ABCD$ in which any node can communicate to any other, and any triangle formed by three of these points is such that $b \cdot \sin(\min_i \theta_i)^2 > d_{min} $ where the $\theta_i$ are the angles of the triangle, $b$ the smallest side length, and $d_{min}$ a constant depending on the measurement noise. By constructing chains of robust quadrilaterals (each robust quadrialateral which contain three nodes in common with the previous one), we can localize reliabily each node in the chain. The algorithm in the original paper doesn't require anchors, but doesn't provide a way of computing network-wide coordinates.
 
-We use the idea of David Moore $et$ $al.$ \cite{MooreTeller} to rely on properties of quadrilaterals to solve flip ambiguities. Flex ambiguities are solved defining the notion of robust quadrilaterals. A quadrilateral is robust when all vertices are connected to all others and when for all triangles $b*sin(min_i \theta_i)^2 > d_{min} $ where $\theta_i$ are the angles and $b$ the smallest side. We diverge from \cite{MooreTeller} on several details but most notably on the cluster definition and transformation parts. these modifications makes our algorithm fully distributed i.e. every node does the same set of operations.
+In this paper, we present a MATLAB implementation of a slightly extended version of this algorithm, which has the following caracteristics:
 
-Our method demonstrated the following capabilities : INSERT RESULTS HERE | INSERT RESULTS HERE | INSERT RESULTS HERE | INSERT RESULTS HERE | INSERT RESULTS HERE | INSERT RESULTS HERE | INSERT RESULTS HERE | INSERT RESULTS HERE | INSERT RESULTS HERE | INSERT RESULTS  
+\begin{enumerate}
+    \item It's designed to handle noisy distance measurements, with unknown variance.
+    \item It is fully distributed, requiring no beacons or anchors, and provides network-wide coordinates for every localized node in the network
+    \item It localizes each node correctly with high probability, or not at all.
+\end{enumerate}
 
-\section{Experiments}
+We will then evaluate this algorithm, using various networks with different caracteristics. We will use the following performance metrics:
 
-During the developement of the project we sometime diverged from Moore $et$ $al.$ 's implementation. We've also made very specific implementation choices that we will discuss in this section. Finally we verified our choices using simple regular graphs.
+\begin{itemize}
+    \item The number of nodes localized.
+    \item The mean-square error in Euclidean 2D space for the location of nodes
+    \item The mean-square error for the distances between nodes
+\end{itemize}
 
-\subsection{Modifications over Moore $et$ $al.$ 's implementation}
+We took care to be sure that our implementation is fully distributed, which means that it would be easily feasible to implement the algorithm in real sensor nodes.
+
+
+
+%We present a solution to localize a network of static sensor nodes. The nodes can sense noisy distances to neighboring nodes and are also capable of communicating with their neighbors. We consider the quality of the algorithm looking at several criteria such as precision, speed of convergence, stability, resistance to perturbations, scalability and computational cost. A good localization algorithm has to balance all of these aspects.
+
+
+%Our method demonstrated the following capabilities : INSERT RESULTS HERE | INSERT RESULTS HERE | INSERT RESULTS HERE | INSERT RESULTS HERE | INSERT RESULTS HERE | INSERT RESULTS HERE | INSERT RESULTS HERE | INSERT RESULTS HERE | INSERT RESULTS HERE | INSERT RESULTS  
+
+\subsection{Modifications over Moore \emph{et al's} implementation}
+
+Since we didn't implemented exactly what was described in the paper, we will present here what was made differently.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% ROBUST QUADS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-The first step was to detect all robust-quads for a given node. In \cite{} the algorithm used to iterates over all the nodes with a depth of 4 from the current node. The 4 nested loops yield an $O(n^4)$ complexity. It is in fact possible only to consider a depth of 3 knowing that the last edge need to link to the current node. This in mind we've implemented an algorithm to find all robust-quads containing a node with a cubic complexity. Saving computational time is part of the important aspect of a good solution. The implemented algorithm is presented as Algorithm 1. 
+\subsubsection{Robust quadrilateral detection}
 
-\begin{algorithm}[H]
-\caption{Find robust quads of node $i$. This algorithm loops over each triplet of neighbours of the node $i$ and find if the resulting quad is robust. $quadIsRobust$ checks if the quad is fully connected, and if each triangle of the quad is robust.}
+One of the main part of the algorithm is to detect all robust quadrilaterals for a given node. Algorithm 1 in \cite{MooreTeller} has a complexity of $O(m^4)$, where $m$ is the number of edges. 
+
+Saving computational time is an important aspect of sensors networks, as it means sparing energy.
+
+Since all three are by definition neighbors of the first node, we can implement it in $O(m^3)$ (which gives exactly the same results as the original algorithm), see algorithm \ref{algo1}.
+
+\begin{algorithm}
+\caption{\label{algo1}Find robust quads of node $i$. This algorithm loops over each triplet of neighbours of the node $i$ and find if the resulting quad is robust. $quadIsRobust$ checks if the quad is fully connected, and if each triangle of the quad is robust.}
 \begin{algorithmic} 
 \STATE $neighboursIds \leftarrow neighbors(node(i))$
 \STATE $nbneighbours \leftarrow length(neighboursIds)$ 
@@ -105,47 +131,75 @@ The first step was to detect all robust-quads for a given node. In \cite{} the a
 \end{algorithm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% VAR ESTIMATION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-In \cite{} the variance of the noise is used to compute $d_{min}$. Its value is fixed and identical for every node. This implied that the noise is known in advanced and that each node has to be calibrated with this value. Based on \cite{Knuth} we've implemented a method allowing each node to estimate the variance they see over the measurements. This emphasize the fully distributed approach we choose to adopt for this project.\newline
+\subsubsection{Robust quadrilateral criteria}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%% SIGMA EDGE LENGTH %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Note that our definition of robust differs from \cite{}. In our implementation, the variance on the noise is proportional to the length of the edge. As $d_{min}$ is choosen with respect to the noise, we already consider the length the shortest edge when we compute $d_{min}$. \newline
+In \cite{MooreTeller}, the authors use as a  $b \cdot \sin(\min_i \theta_i)^2 > d_{min}$, an propose that $d_{min}=3\sigma$. This works as long as the noise is the same for all edges. 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%% SPRING RELAXATION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-As proposed in \cite{}, we have inplemented the spring relaxation technique to see how it can improve performances. Spring relaxation computes the forces applied to each nodes by its neighbours. Each force is proportional to the difference between the distances measured and the distances computed with the positions of the nodes. Then we compute the position that minimize the potential.
-The node uses both robust squad and spring relaxation techniques with appropriate weigths to compute its new position. The performances of this optimization is discussed in the result section. 
-\newline
+In our case, we based our hypothesis that $\sigma$ is proportional to the length of the measurement.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%% ANCHOR NODE ESTI. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-In \cite{} the positions are propagated by associating a cluster to each node and solving the best rotation and translation to merge these clusters. This implies a lot of information sharing among the nodes and represents to us a flaw in the distributed scheme we wanted. We've decided to modify this part of the implementation for a fully distributed version relying on anchor nodes to propagate the position starting from an origin. The user might not be able to modify the nodes' position and we must be careful not to select bads anchor nodes i.e. starting nodes from which we cannot propagate. To realise this we dynamically select the anchor points by propagating a score in the network. For each node this score represents how regular and numerous the robust-quads are at this node. The anchor points are selected from the best scoring node. 
+We used therefore $\sin(\min_i \theta_i)^2 > d_{mf} \sigma$, where $d_{mf}$ is a constant.
 
-The propagation step then works as follow : for each node we consider computing its position looking at the set of robust quadrilaterals the point belongs to. The three anchor nodes fix an arbitrary translation, rotation, and reflection. The origin node is set as origin of the coordinate system. A node trilaterates its position when he belongs to a robust-quad containing three points of known position. When several robust-quads are available we select the best one. Here the notion of best is defined as the smallest distance from the node of the robust quad to the source. Indeed, the robust-quads closer to the origin are more reliable than the one far away. This priority is essential for the convergence of the algorithm, it ensures that the propagation will always occur starting from the source.
+\subsubsection{Variance estimation}
 
-MORE DETAILS NEEDED HERE ABOUT SELECTING THE BEST QUAD AND WHAT HAPPEN WHEN ANCHORS CHANGE + DIAGRAM
+In a real implementation, noise levels are not known a priori. Therefore we implemented, for each edge of the graph, the online estimator for the mean and variance proposed in \cite{Knuth}. This emphasis the fully distributed approach we've choosen.
 
-As a consequence of this choice we only have one relative coordinate system for all of our nodes instead of one coordinate system for each node as in Moore $et$ $al.$'s implementation. 
+\subsubsection{Spring relaxation}
+
+As proposed in \cite{MooreTeller}, we have inplemented the spring relaxation technique to see how it can improve performances. The idea is to put virtual springs between nodes, which lengths are exactly the measured length of the edge. Spring relaxation computes the forces applied to each nodes by the strings linking it to its neighbours. Each force is proportional to the difference between the distances measured and the distances computed with the positions of the nodes. Actually, it correspond to minimizing the potential energy for all the springs, using a gradient descent technique.
+
+The node uses a convex combination between the position obtained by the trilateration, and the position obtained by the spring relaxation. The performances of this optimization is discussed in the result section.
+
+\subsubsection{Anchor node estimation, and position propagation}
+
+In \cite{MooreTeller} the positions are computed cluster-wise, and propagated by solving the best rotation and translation to merge these clusters. This implies a lot of information sharing among the nodes and represents to us a flaw in the distributed scheme we wanted.
+
+Our first attempt to solve this problem was to select 3 arbitrary nodes as anchors, and then locate relatively to them. The problem with this approach is that those node might not be in a robust quadrilateral, and it happens quite often that we don't localize anything (about 40\% of the time, in a complete 20-node graph).
+
+Therefore, we've decided to implement a voting scheme. Each node selects it's ``best'' anchor possible (3 points), and broadcast its choice to its neighbors. When a anchor proposal is received, there are three possibilities:
+\begin{itemize}
+    \item the anchor is better than the one we have currently: choose this anchor
+    \item the anchor is worse than the one we have currently: do nothing
+    \item it's the same anchor as the one we have currently, but with a different score: update the score in our local memory.
+\end{itemize}
+
+To select the best node, we have to use a metric. We define coordinate system based on the anchor $n_1, n_2, n_3$, such that it makes $n_1$ be the origin, $n_2$ a node on the $x$ axis, and $n_3$ be in the $y>0$ region (it's always possible to build such a coordinate system, as long as the three points are not colinear). The score of the anchor is defined as the sum of:
+\begin{itemize}
+    \item $\sin(\min_i \theta_i)^2$, in the triangle $n_1, n_2, n_3$
+    \item Number of robust quadrilaterals containing $n_2$ and $n_3$ in the neighborhood of $n_1$, divided by the number of robust quadrilaterals containing $n_1$
+    \item The number of robust quadrilaterals containing $n_1$
+\end{itemize}
+
+This make the collective decision prefers $n_1$ having a large number of robust quadrilaterals, and $n_2$ and $n_3$ such that they form the most equilateral triangle, belonging to the biggest number of robust quads possible. This ensure a good likelihood to have good localization properties.
+
+To localize a node, we use the set of robust quadrilaterals the point belongs to, in which the three other points have known coordinates. When several robust-quads are available we select the best one. Here the notion of best is defined as the one which average edge distance to the anchor is the smallest. Indeed, the robust quadrilaterals closer to the anchor are more reliable than the one far away (because measurement errors accumulate). This is also essential for the convergence of the algorithm, as it ensures that the propagation starts from the anchor, and avoid looping (base a node $n$ localization on nodes which were localized used $n$).
+
+As a consequence of this, we only have one relative coordinate system for all of our nodes instead of one coordinate system for each node as in Moore \emph{et al.'s} implementation. 
 
 \subsection{Implementation choices}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%% FULLY DISTRIBUTED %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-To validate an entirely distributed model, each node has private data, only accesible through communication. For a node the knowledge of the network is sparse and limited to his neignbors. No global information sharing is done as in \cite{}. Thus our implementation is cheap in term of memory requirement. Each node has a probability of evaluating its distance to his neighbors, when a new measurement is done the new values are broadcast.\newline
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%% COMPUTATION THEN COM %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-A network localization problem relies on local communications and tries to solve a global task. Thus the first step of our work was actually to model the exchanges happening between different nodes. We model this by a two states machine. The first step is communication, the nodes send different types of messages to neighbors:
-
+To validate that our implementation is indeed an entirely distributed one, each node has only access to:
 \begin{itemize}
-
-\item measured distances to its neighbours
-\item its absolute position
-\item its list of robust quads. %need to give more details about why ? 
-% !!!! TO BE REPLACED?
-\item its distance to the origin of the graph, defined in numbers of hops to it.
-
+    \item its private data
+    \item a function to broadcast a message
+    \item a function which is called when receiving a message
 \end{itemize}
 
-During the second stage the message are processed. These two alternated steps ensure a realistic simulation where the information is processed at each timer tick. 
+This ensures that a node doesn't accidentally has access to internal state of other nodes, to the simulation variables, or to some global variable. 
 
-INSERT DIAGRAM : enumerate all possible messages / agencer avec node\_timer\_tick
+Our implementation requires only the node to store information from its neighbors, so its pretty cheap in term of memory requirement.
+
+Our simulator has two states, the first is the computation stage, in which node try to localize, do the measurements, put message in the sending queue. During the second stage the message are processed and notified to the receiving nodes. These two alternated steps ensure a realistic simulation where the information is processed at each timer tick and ensure that we don't do hidden callbacks between nodes. 
+
+Each node can send the the following messages:
+
+\begin{itemize}
+    \item measured distances to its neighbours
+    \item its absolute position
+    %\item its list of robust quads. % Well we don't need it, so don't mention it
+    \item the anchor, its score, and the path length (in number of edges) to the anchors
+\end{itemize}
+
+\section{Experiments}
 
 \subsection{Parameters introduced}
 
@@ -177,6 +231,18 @@ We tried to set up a simple regular network used to trivially verify our impleme
 
 \section{Conclusion}
 
+
+\begin{thebibliography}{99}
+
+\bibitem{MooreTeller} David Moore, John Leonard, Daniela Rus, Seth Teller, Robust Distributed Network Localization with Noisy Range Measurements, 2004.
+
+\bibitem{Knuth} Donald Knuth, The Art Of Computer Programming, vol 2, 3rd ed, p. 232
+
+
+
+
+
+\end{thebibliography}
 
 
 
@@ -225,16 +291,7 @@ We measure the error on the distances
 \section{Conclusion}
 
 
-\begin{thebibliography}{99}
 
-\bibitem{MooreTeller} Moore Teller, ÒSynthetic structure of industrial plastics (Book style with paper title and editor),Ó 	in Plastics, 2nd ed. vol. 3, J. Peters, Ed.  New York: McGraw-Hill, 1964, pp. 15Ð64.
-
-\bibitem{Knuth} David Moore John Leonard Daniela Rus Seth Teller, ÒRobust Distributed Network Localization with Noisy Range Measurements, 2004.
-
-
-
-
-\end{thebibliography}
 
 
 
