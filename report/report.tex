@@ -26,6 +26,8 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 %\usepackage{algorithmicx}
+\usepackage{multirow}
+\usepackage{tabularx}
 
 \title{\LARGE \bf
  Distributed network localization
@@ -201,28 +203,62 @@ Each node can send the the following messages:
 
 \section{Experiments}
 
-\subsection{Parameters introduced}
+We tried to set up simple regular networks, which were used to trivially verify our implementation, removing the uncertainty infered by the graph topology. These graph can as well be used as reference graphs used to compare with more complicated graphs.\newline
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%% PARAMETERS LIST %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Our implementation choices made us introduce new parameters. 
-
-\begin{itemize}
-\item $d_{min}$ factor : ratio between the threshold dmin and the variance of the noise
-\item spring relaxation factor : weigth in the interpolation between the m distance to the origin of the graph, defined in numbers of hops to it.
-\end{itemize}
-
-
-\subsection{Tests on regular graphs}
-
-We tried to set up a simple regular network used to trivially verify our implementation emoving the uncertainty infered by the graph topology. These graph can as well be used as reference graphs used to compare with more complicated graphs.\newline
-
+%[net]=f_regular_net(20,5,20,gca)
+%print -deps '../report/reg1.eps'
+%[net]=f_regular_net3(21,5,20,true,gca)
+%print -deps '../report/reg3.eps'
 
 \begin{figure}[ht!]
 \centering
-%\includegraphics[width=90mm]{}
-\caption{regular graph}
+\includegraphics[width=0.4\columnwidth]{reg1.eps} \includegraphics[width=0.4\columnwidth]{reg3.eps}
+\caption{Examples of regular graphs}
 \end{figure}
 
+\subsection{Parameters}
+
+While regular graphs are useful during developement, it doesn't provide a mean to have statistical data about the efficiency of the algorithm and implementation.
+
+Therefore, we used random graphes, which are generated depending on some parameters. Additionnally, we have parameters specifying the node behaviour, as well as some simulation parameters. All these parameters are listed in table \ref{table:parameters}.
+
+\begin{table}[!hbt]
+%Better way to do this?
+\begin{tabularx}{8.4cm}{|p{1cm}|p{6.5cm}|}
+\hline
+\multicolumn{2}{|c|}{Network parameters:} \\
+\hline
+$N$ & number of nodes \\
+$K$ & minimum connectivity \\
+$R$ & average communication radius \\
+\hline
+\multicolumn{2}{|c|}{Node parameters:} \\
+\hline
+$F$ & probability to do a measurement and broadcast it \\
+$d_{mf}$ & ratio between the threshold $d_{min}$ and the variance of the noise \\
+$srf$ & spring relaxation factor: weight for the convex combination between the position obtained by trilateration, and the one obtained by spring relaxation. ($srf=0$: no spring relaxation) \\
+\hline
+\multicolumn{2}{|c|}{Simulation parameters:} \\
+\hline
+$t_{max}$ & Maximum number of simulation steps \\
+$n$ & noise percentage, Gaussian noise on range measurements \\
+\hline
+\end{tabularx}
+\caption{\label{table:parameters}List of parameters}
+\end{table}
+
+We used by default the following parameters for all our experiments: 
+
+$N = 20$, $R = 20$, $F = 0.2$, $t_{max} = 100$, $n = 0.1$, $K = 11$, $d_{mf}=1$, $srf \in \{0.0, 0.1\}$
+
+We then tested our implementation with the following set of parameters:
+
+\begin{enumerate}
+\item $K \in \{3, 5, 7, 9, 11, 13, 15, 17, 19\}$ (varying connectivity of the graph)
+\item $F \in \{0.1, 0.2, 0.3, 0.4, 0.5\}$ (varying communication probability)
+\item $n \in \{0.1, 0.2, 0.3, 0.4, 0.5\}$ (varying noise level)
+\item $t_{max} = \{1, 2, \ldots 100\}$ (varying the number of iterations)
+\end{enumerate}
 
 \section{Results}
 %speed of convergence
