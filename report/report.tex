@@ -261,6 +261,46 @@ We then tested our implementation with the following set of parameters:
 \end{enumerate}
 
 \section{Results}
+Throughout this section, we will see a lot of boxplots. The central mark of each box is the median, and its edges are the 25th and 75th percentiles. The whiskers extends to a length of 2.7$\sigma$, and the red crosses are outliers.
+
+We used the same network and the same random measurements for all the different parameters in an experiment. For each experiment, we made 100 runs in order to have statistically significant measures.
+
+\subsection{Experiment 1}
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=1\columnwidth]{set1-L-nosrf.eps}
+\includegraphics[width=1\columnwidth]{set1-sp-nosrf.eps}
+\includegraphics[width=1\columnwidth]{set1-sd-nosrf.eps}
+\caption{\label{figure:set1}Experiment 1: $L$, $\sigma_p$ and $\sigma_d$ in function of $K$, with $srf=0$}
+\end{figure}
+
+As we can see in figure \ref{figure:set1}, we have pretty good convergence, even with low connectivity. The plots for $\sigma_p$ and $\sigma_d$ are influenced by huge outliers, but we can see in figure \ref{fig:set1-rescaled} that most of the time, it converges very well, with very small $\sigma_p$ and $\sigma_d$. It seems that with $K \leq 11$, we are pretty sure to localize nearly every node. This justifies the choice of $K=11$ for the other experiments.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=1\columnwidth]{set1-sp-nosrf-ylim.eps}
+\includegraphics[width=1\columnwidth]{set1-sd-nosrf-ylim.eps}
+\caption{\label{fig:set1-rescaled}Experiment 1: $\sigma_p$ and $\sigma_d$ in function of $K$, with $srf=0$, rescaled.}
+\end{figure}
+
+\subsection{Experiment 2}
+
+\subsection{Experiment 3}
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=1\columnwidth]{set3-L.eps}
+\includegraphics[width=1\columnwidth]{set3-sp.eps}
+\includegraphics[width=1\columnwidth]{set3-sd.eps}
+\caption{\label{figure:set3}Experiment 3: $L$, $\sigma_p$ and $\sigma_d$ in function of $n$ and $srf$}
+\end{figure}
+
+We can see in figure \ref{figure:set3} what happens when the noise increase. As we expect, the number of nodes localized decrease dramatically, because we have far less robust quadrilaterals (since we are more ``strict'' on the robustness of triangles). 
+
+\subsection{Experiment 4}
+
+
+
 %speed of convergence
 %Performance Metrics
 %Scalability : performances w.r.t Nb of nodes
