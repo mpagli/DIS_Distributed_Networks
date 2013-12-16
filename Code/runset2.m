@@ -39,6 +39,10 @@ for spring_relaxation_factor = l_spring_relaxation_factor
 
 
 fname = sprintf('%s-%02d-%02d-%02d-%0.2f-%03d-%0.2f-%0.2f-%0.2f-%04d.mat', prefix, N, K, R, F, t_max, noise, d_min_factor, spring_relaxation_factor, i);
+if isequal(exist(fname,'file'),2)
+    %file already exists
+    continue
+end
 fprintf('\n\n%s\n\n', fname);
 
 data = dn_generate_nodes(N, F, d_min_factor, spring_relaxation_factor);
