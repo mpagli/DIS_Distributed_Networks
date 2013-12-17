@@ -79,7 +79,7 @@ In this paper, we present a MATLAB implementation of a slightly extended version
     \item It localizes each node correctly with high probability, or not at all.
 \end{enumerate}
 
-We will then evaluate this algorithm, using various networks with different caracteristics. We will use the following performance metrics:
+We also evaluate this algorithm, using various networks with different characteristics. We will use the following performance metrics:
 
 \begin{itemize}
     \item The number of nodes localized.
@@ -87,7 +87,7 @@ We will then evaluate this algorithm, using various networks with different cara
     \item The mean-square error for the distances between nodes
 \end{itemize}
 
-We took care to be sure that our implementation is fully distributed, which means that it would be easily feasible to implement the algorithm in real sensor nodes.
+Care has been taken to ensure that our implementation is fully distributed, which means that it would be easily feasible to implement the algorithm in real sensor nodes.
 
 
 
@@ -98,7 +98,7 @@ We took care to be sure that our implementation is fully distributed, which mean
 
 \subsection{Modifications over Moore \emph{et al's} implementation}
 
-Since we didn't implemented exactly what was described in the paper, we will present here what was made differently.
+Since we did not implement exactly what was described in the paper, we will present here what was made differently.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% ROBUST QUADS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Robust quadrilateral detection}
@@ -135,11 +135,11 @@ Since all three are by definition neighbors of the first node, we can implement 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% VAR ESTIMATION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Robust quadrilateral criteria}
 
-In \cite{MooreTeller}, the authors use as a  $b \cdot \sin(\min_i \theta_i)^2 > d_{min}$, an propose that $d_{min}=3\sigma$. This works as long as the noise is the same for all edges. 
+In \cite{MooreTeller}, the authors use a fixed $d_{min}$ as threshold:  $b \cdot \sin(\min_i \theta_i)^2 > d_{min}$, and propose that $d_{min}=3\sigma$. This works as long as the noise is the same for all edges. 
 
-In our case, we based our hypothesis that $\sigma$ is proportional to the length of the measurement.
+In our case, we based our experiments upon the hypothesis that $\sigma$ is proportional to the length of the measurement.
 
-We used therefore $\sin(\min_i \theta_i)^2 > d_{mf} \sigma$, where $d_{mf}$ is a constant.
+We therefore use $\sin(\min_i \theta_i)^2 > d_{mf} \sigma$, where $d_{mf}$ is a constant.
 
 \subsubsection{Variance estimation}
 
@@ -164,7 +164,7 @@ Therefore, we've decided to implement a voting scheme. Each node selects it's ``
     \item it's the same anchor as the one we have currently, but with a different score: update the score in our local memory.
 \end{itemize}
 
-To select the best node, we have to use a metric. We define coordinate system based on the anchor $n_1, n_2, n_3$, such that it makes $n_1$ be the origin, $n_2$ a node on the $x$ axis, and $n_3$ be in the $y>0$ region (it's always possible to build such a coordinate system, as long as the three points are not colinear). The score of the anchor is defined as the sum of:
+To select the best node, we have to use a metric. We define coordinate system based on the anchor $n_1, n_2, n_3$, such that it makes $n_1$ be the origin, $n_2$ a node on the $x$ axis, and $n_3$ be in the $y>0$ region (it's always possible to build such a coordinate system, as long as the three points are not collinear). The score of the anchor is defined as the sum of:
 \begin{itemize}
     \item $\sin(\min_i \theta_i)^2$, in the triangle $n_1, n_2, n_3$
     \item Number of robust quadrilaterals containing $n_2$ and $n_3$ in the neighborhood of $n_1$, divided by the number of robust quadrilaterals containing $n_1$
@@ -186,11 +186,11 @@ To validate that our implementation is indeed an entirely distributed one, each 
     \item a function which is called when receiving a message
 \end{itemize}
 
-This ensures that a node doesn't accidentally has access to internal state of other nodes, to the simulation variables, or to some global variable. 
+This ensures that a node cannot access to internal state of other nodes, to the simulation variables, or to some global variable. 
 
-Our implementation requires only the node to store information from its neighbors, so its pretty cheap in term of memory requirement.
+Our implementation requires only the node to store information from its neighbors, so it is cheap in term of memory requirement.
 
-Our simulator has two states, the first is the computation stage, in which node try to localize, do the measurements, put message in the sending queue. During the second stage the message are processed and notified to the receiving nodes. These two alternated steps ensure a realistic simulation where the information is processed at each timer tick and ensure that we don't do hidden callbacks between nodes. 
+Our simulator has two states, the first is the computation state, in which nodes try to localize, do the measurements, put message in the sending queue. During the second stage the message are processed and notified to the receiving nodes. These two alternated steps ensure a realistic simulation where the information is processed at each timer tick and ensure that we don't do hidden callbacks between nodes. 
 
 Each node can send the the following messages:
 
@@ -218,9 +218,9 @@ We tried to set up simple regular networks, which were used to trivially verify 
 
 \subsection{Parameters}
 
-While regular graphs are useful during developement, it doesn't provide a mean to have statistical data about the efficiency of the algorithm and implementation.
+While regular graphs are useful during development, it doesn't provide a mean to have statistical data about the efficiency of the algorithm and implementation.
 
-Therefore, we used random graphes, which are generated depending on some parameters. Additionnally, we have parameters specifying the node behaviour, as well as some simulation parameters. All these parameters are listed in table \ref{table:parameters}.
+Therefore, we used random graphs, which are generated depending on some parameters. Additionally, we have parameters specifying the node behavior, as well as some simulation parameters. All these parameters are listed in table \ref{table:parameters}.
 
 \begin{table}[!hbt]
 %Better way to do this?
@@ -331,7 +331,7 @@ By looking at figure \ref{figure:set4}, we see that the algorithm passes through
     \item $t>45$: Node localization is refined according to new data. This eventually make the errors $\sigma_p^2$ and $\sigma_d^2$ decrease. Usually, there is no flips which makes big differences in localization.
 \end{itemize}
 
-An interesting thing is that there seem to be a change at about iteration $80$. Futher research may try to find why it happens.
+An interesting thing is that there seem to be a change at about iteration $80$. Further research may try to find why it happens.
 
 %speed of convergence
 %Performance Metrics
