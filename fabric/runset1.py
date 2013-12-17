@@ -2,10 +2,11 @@ from fabric.api import *
 from fabric.contrib.files import exists
 from multiprocessing import Lock, Queue
 from Queue import Empty
+import time
 env.dedupe_hosts = False
 
 valid_hosts_ids = list(range(1,30))
-valid_hosts_ids = [1,2,4,5,6,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]
+valid_hosts_ids = [1,2,4,5,6,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,26,28]
 
 valid_hosts = ['fasnacht@smapc{0:03d}.epfl.ch'.format(x) for x in valid_hosts_ids]
 
@@ -18,6 +19,7 @@ jobs = [(x,x+1,y) for y in [3, 5, 7, 9, 11, 13, 15, 17, 19] for x in range(1,100
 
 env.work_queue = Queue()
 for j in jobs:
+    time.sleep(0.01)
     env.work_queue.put(j)
 
 @task
