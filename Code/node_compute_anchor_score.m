@@ -1,4 +1,14 @@
 function [r] = node_compute_anchor_score(node)
+% [r] = node_compute_anchor_score(node)
+%
+% Compute and return the best anchor & score for the node
+%
+% Parameters:
+%  - node
+%
+% Output values:
+%  - r = [node.id other_node1 other_node2 score]
+
 
 id=node.id;
 

@@ -1,5 +1,5 @@
 function [data] = dn_generate_nodes(N, broadcast_distance_probability, d_min_factor, spring_relaxation_factor, anchors)
-% [data] = dn_generate_nodes(N, broadcast_distance_probability, d_min_factor, spring_relaxation_factor)
+% [data] = dn_generate_nodes(N, broadcast_distance_probability, d_min_factor, spring_relaxation_factor, anchors)
 %
 % Generate a cell array of nodes.
 %
@@ -9,7 +9,8 @@ function [data] = dn_generate_nodes(N, broadcast_distance_probability, d_min_fac
 %  - d_min_factor: d_min factor as described in the paper, part 2.1, eq (2)
 %  - spring_relaxation_factor: factor used for the affine combination between the point computed by this paper, and the one obtained by spring relaxation.
 %      A factor of 0 means that spring relaxation won't be used, as a factor of 1 will make the node only use results from spring relaxation as soon as the first localization is found.
-%
+%  - anchors: optional: list of 3 nodes ids which will be the fixed anchor for the network. If not specified, nodes will votes for the best anchor.
+% 
 % Output:
 %  - data: cell array of nodes (Nx1), each node is a struct
 

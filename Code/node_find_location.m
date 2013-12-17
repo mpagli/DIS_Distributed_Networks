@@ -1,5 +1,14 @@
-%% Locate the node 
 function [node] = node_find_location(node)
+% [node] = node_find_location(node)
+%
+% Compute location of node, using trilateration on robust quads
+%
+% Parameters:
+%  - node
+%
+% Output values:
+%  - node (updated)
+
 
 robustquads = node.data{node.id}.robustquads;
 
