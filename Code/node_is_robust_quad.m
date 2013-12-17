@@ -1,4 +1,19 @@
 function [robust] = node_is_robust_quad(node, j, k, l, connectivity)
+% [robust] = node_is_robust_quad(node, j, k, l, connectivity)
+%
+% Update the running average, and the second moment for distance estimation and distance variance estimation.
+%
+% Based on Knuth, The Art Of Computer Programming, vol 2, 3rd ed, p232
+%
+% Parameters:
+%  - node: first node
+%  - j: second node id
+%  - k: third node id
+%  - l: forth node id
+%  - connectivity: optional adjacency matrix of the graph (otherwise, use the distances from node)
+%
+% Output values:
+%  - robust: 1 if the quad is robust, 0 otherwise
 
 debug = 0;
 

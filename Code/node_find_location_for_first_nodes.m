@@ -1,5 +1,14 @@
 function [node] = node_find_location_for_first_nodes(node)
+% [node] = node_find_location_for_first_nodes(node)
 %
+% Update coordinates for anchor nodes. Anchor(1) is at (0,0), Anchor(2) is at (d_12, 0), Anchor(3) is in the y>0 region, and triangulated using Anchor(1) and Anchor(2).
+%
+% Parameters:
+%  - node
+%
+% Output values:
+%  - node (updated)
+
 anchor1 = node.data{node.id}.anchor(1);
 anchor2 = node.data{node.id}.anchor(2);
 anchor3 = node.data{node.id}.anchor(3);
