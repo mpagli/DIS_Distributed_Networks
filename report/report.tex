@@ -339,9 +339,13 @@ An interesting thing is that there seems to be a change at about iteration $80$.
 
 \section{Conclusion}
 
-This algorithm and implementation show pretty good convergence properties, as long as the noise is less than $20\%$ of the length measurements, and that we have a high enough degree of the graph. We've shown that with $K=11$, and $n=0.1$, we have fully localized the network after about $50$ iterations, and that each additional iteration refines the result.
+This algorithm and implementation show pretty good convergence properties, as long as the noise is less than $20\%$ of the length measurements, and that we have a high enough degree of the graph. We've shown that with $K=11$, and $n=0.1$, we have fully localized the network after about $50$ iterations, and that each additional iteration refines the result. We've also seen that spring relaxation does not help convergence. The complexity is also very good, since it's polynomial with respect to the degree of the node.
 
 If we are in a case in which those properties are satisfied, this method is a very good choice, as the error is very low.
+
+The algorithm seems to be also very good when using mobile nodes (some test were made, but we didn't have time to do statistical measurements). Futher work may focus on this aspect.
+
+
 
 \begin{thebibliography}{99}
 
