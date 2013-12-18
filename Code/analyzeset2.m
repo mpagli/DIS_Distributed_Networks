@@ -1,3 +1,4 @@
+%Make plots for experiment 2
 folder='results/set2/'
 
 files=dir([folder '*.mat']);

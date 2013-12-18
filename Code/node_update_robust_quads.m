@@ -10,7 +10,7 @@ end
 node.data{node_id}.robustquads = robustquads;
 
 if node.id == node_id
-    node = broadcast(node, 'robustquads', robustquads);
+    %node = broadcast(node, 'robustquads', robustquads);
     node.robustquads_changed = true;
 end
 
