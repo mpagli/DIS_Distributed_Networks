@@ -32,18 +32,12 @@ if isnan(node.data{node.id}.anchor(1)) || node.data{node.id}.anchor(1)==node.id 
         end
     end
     
-    %If the score of ourselves is better than the best anchor found
-    %or we don't have any anchor yet
-    %if my_anchor(4) > selected_anchor_data.anchor(4) || isnan(node.data{node.id}.anchor(1))
-    %    node = node_update_anchor(node, node.id, my_anchor);
-    %if selected_anchor ~= node.id
-        coordinates_changed = ~isequal(node.data{node.id}.anchor(1:3), selected_anchor_data(1:3));
-        if coordinates_changed
-            node = node_update_position(node, node.id, [nan nan]);
-        end
-        node.data{node.id}.anchor = selected_anchor_data;
-        %fprintf('Anchor for %d: %d %d %d\n',node.id,selected_anchor_data(1:3));
-    %end
+    coordinates_changed = ~isequal(node.data{node.id}.anchor(1:3), selected_anchor_data(1:3));
+    if coordinates_changed
+        node = node_update_position(node, node.id, [nan nan]);
+    end
+    node.data{node.id}.anchor = selected_anchor_data;
+    %fprintf('Anchor for %d: %d %d %d\n',node.id,selected_anchor_data(1:3));
 end
 
 if node.anchor_changed

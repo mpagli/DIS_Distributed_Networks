@@ -1,3 +1,5 @@
+%Script to run a set to explore the impact of dmin factor from fabric (uses environment variables)
+
 exps = str2num(getenv('IMIN')):str2num(getenv('IMAX'))
 
 % number of nodes

@@ -1,3 +1,5 @@
+%Script to run set2 from fabric (uses environment variables)
+
 exps = str2num(getenv('IMIN')):str2num(getenv('IMAX'))
 
 % number of nodes

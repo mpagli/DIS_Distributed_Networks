@@ -1,5 +1,9 @@
-%% find the coordinates of P belongig to the robust quad. P,Pa,Pb,Pc
 function [Position] = Trilaterate (Pa,daj,Pb,dbj,Pc,dcj)
+% [Position] = Trilaterate (Pa,daj,Pb,dbj,Pc,dcj)
+%
+% Compute the trilateration using Pa, Pb, and Pc, and the three associated distances daj, dbj and dcj
+%
+% Outputs the resulting position
 
 % get intersection between the circles (Pa,daj) and (Pb,dbj)
 [xout1,yout1] = circcirc(Pa(1),Pa(2),daj,Pb(1),Pb(2),dbj);  

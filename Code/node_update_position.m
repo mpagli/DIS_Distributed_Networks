@@ -1,4 +1,7 @@
 function [node] = node_update_position(node, node_id, position)
+% [node] = node_update_position(node, node_id, position)
+%
+% Update node, set position for node_id
 
 if isequal(node.data{node_id}.position, position)
     return

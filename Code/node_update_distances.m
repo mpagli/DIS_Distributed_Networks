@@ -1,4 +1,7 @@
 function [node] = node_update_distances(node, node_id, distances)
+% [node] = node_update_distances(node, node_id, distances)
+%
+% Update node, modify distance estimation for node_id (new measurement: distances)
 
 for i = 1:node.N
     if isnan(distances(i))==0
