@@ -22,7 +22,7 @@ for j in jobs:
 
 @task
 def Deploy():
-    run('git clone https://fasnacht:ox59xTzf@private.o-t.ch:17443/git/dis/project /tmp/dis-project')
+    run('git clone https://fasnacht:@private.o-t.ch:17443/git/dis/project /tmp/dis-project')
     run('chmod 700 /tmp/dis-project')
     
 @task
