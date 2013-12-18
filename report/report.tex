@@ -75,7 +75,7 @@ In this paper, we present a MATLAB implementation of a slightly extended version
 
 \begin{enumerate}
     \item It's designed to handle noisy distance measurements, with unknown variance.
-    \item It is fully distributed, requiring no beacons or anchors, and provides network-wide coordinates for every localized node in the network
+    \item It is fully distributed, requiring no beacons or anchors, and provides network-wide coordinates for every localized node in the network.
     \item It localizes each node correctly with high probability, or not at all.
 \end{enumerate}
 
@@ -83,8 +83,8 @@ We also evaluate this algorithm, using various networks with different character
 
 \begin{itemize}
     \item The number of nodes localized.
-    \item The mean-square error in Euclidean 2D space for the location of nodes
-    \item The mean-square error for the distances between nodes
+    \item The mean-square error in Euclidean 2D space for the location of nodes.
+    \item The mean-square error for the distances between nodes.
 \end{itemize}
 
 Care has been taken to ensure that our implementation is fully distributed, which means that it would be easily feasible to implement the algorithm in real sensor nodes.
@@ -147,7 +147,7 @@ In a real implementation, noise levels are not known a priori. Therefore we impl
 
 \subsubsection{Spring relaxation}
 
-As proposed in \cite{MooreTeller}, we have inplemented the spring relaxation technique to see how it can improve performances. The idea is to put virtual springs between nodes, which lengths are exactly the measured length of the edge. Spring relaxation computes the forces applied to each nodes by the strings linking it to its neighbours. Each force is proportional to the difference between the distances measured and the distances computed with the positions of the nodes. Actually, it correspond to minimizing the potential energy for all the springs, using a gradient descent technique.
+As proposed in \cite{MooreTeller}, we have inplemented the spring relaxation technique to see how it can improve performances. The idea is to put virtual springs between nodes, which lengths are exactly the measured length of the edge. Spring relaxation computes the forces applied to each nodes by the strings linking it to its neighbours. Each force is proportional to the difference between the distances measured and the distances computed with the positions of the nodes. Actually, it corresponds to minimizing the potential energy for all the springs, using a gradient descent technique.
 
 The node uses a convex combination between the position obtained by the trilateration, and the position obtained by the spring relaxation. The performances of this optimization is discussed in the result section.
 
@@ -281,7 +281,7 @@ We used the same network and the same random measurements for all the different 
 \caption{\label{figure:set1}Experiment 1: $L$, $\sigma_p^2$ and $\sigma_d^2$ in function of $K$, with $srf=0$}
 \end{figure}
 
-As we can see in figure \ref{figure:set1}, we have pretty good convergence, even with low connectivity. The plots for $\sigma_p^2$ and $\sigma_d^2$ are influenced by huge outliers, but we can see in figure \ref{fig:set1-rescaled} that most of the time, it converges very well, with very small $\sigma_p^2$ and $\sigma_d^2$. It seems that with $K \geq 11$, we are pretty sure to localize nearly every node. This justifies the choice of $K=11$ for the other experiments.
+As we can see in figure \ref{figure:set1}, we obtain a pretty good convergence, even with low connectivity. The plots for $\sigma_p^2$ and $\sigma_d^2$ are influenced by huge outliers, but we can see in figure \ref{fig:set1-rescaled} that most of the time, it converges very well, with very small $\sigma_p^2$ and $\sigma_d^2$. It seems that with $K \geq 11$, we are pretty sure to localize nearly every node. This justifies the choice of $K=11$ for the other experiments.
 
 \begin{figure}[ht!]
 \centering
@@ -300,7 +300,7 @@ As we can see in figure \ref{figure:set1}, we have pretty good convergence, even
 \caption{\label{figure:set2}Experiment 2: $L$, $\sigma_p$ and $\sigma_d$ in function of $F$. For $F=0.1$, the top of $\sigma_d$ box is at $30$ and the whiskers at $71$.}
 \end{figure}
 
-We can see in this experiment that our method require enough measurements to converge. We see that $0.1$ is not enough, even if the number of node localized is pretty good, the error $\sigma_d^2$ is very high.
+We can see in this experiment that our method requires enough measurements to converge. We see that $0.1$ is not enough, even if the number of node localized is pretty good, the error $\sigma_d^2$ is very high.
 
 \subsection{Experiment 3}
 
@@ -331,7 +331,7 @@ By looking at figure \ref{figure:set4}, we see that the algorithm passes through
     \item $t>45$: Node localization is refined according to new data. This eventually make the errors $\sigma_p^2$ and $\sigma_d^2$ decrease. Usually, there is no flips which makes big differences in localization.
 \end{itemize}
 
-An interesting thing is that there seem to be a change at about iteration $80$. Further research may try to find why it happens.
+An interesting thing is that there seems to be a change at about iteration $80$. Further research may try to find why it happens.
 
 %speed of convergence
 %Performance Metrics
