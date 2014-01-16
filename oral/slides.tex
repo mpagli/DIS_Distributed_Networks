@@ -118,14 +118,74 @@ xleftmargin=0cm
 \end{frame}
 
 \section{Problem statement}
+
+\begin{frame}
+    \frametitle{Problem statement}
+    \begin{itemize}
+        \item localization in 2D-graph \\~
+        \item noisy distances \\~
+        \item distributed system \\~
+    \end{itemize}
+\end{frame}
+
 \section{Moore et al. approach}
+
+\begin{frame}
+    \frametitle{Basic idea}
+    \begin{itemize}
+        \item Trilateration
+    \end{itemize}
+\end{frame}
 
 \begin{frame}
     \frametitle{Flip ambiguity}
     \includegraphics[width=\columnwidth]{schemas/FlipAmbiguity.pdf}
 \end{frame}
 
+\begin{frame}
+    \frametitle{Robust quadrilaterals}
+    
+    \begin{itemize}
+        \item Quadrilateral consisting only in robust triangles \\~
+        \item Criteria: $\min_{x,y \in T} d(x,y) \sin(\min_i \theta_i)^2 > k \sigma$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Combining robust quadrilaterals}
+    
+    \begin{itemize}
+        \item Find geometric transformation to match robust quads
+    \end{itemize}
+\end{frame}
+
 \section{Our approach}
+
+\begin{frame}[fragile]
+    \frametitle{Fully distributed}
+    Node memory:
+    \begin{itemize}
+        \item state
+        \item algorithms parameters
+        \item node id
+    \end{itemize}
+    
+    \vspace{1cm}
+    
+    \begin{lstlisting}[lang=MATLAB]
+        function [node] = node_timer_tick(node)
+    \end{lstlisting}
+    
+\end{frame}
+
+\begin{frame}
+    \frametitle{Deterministic test cases}
+    \includegraphics[width=0.5\columnwidth]{schemas/reg1.eps}
+    \includegraphics[width=0.5\columnwidth]{schemas/reg3.eps}
+    
+    Even for random graphs: use fixed random seed.
+\end{frame}
+
 \begin{frame}
     \frametitle{Variance estimation}
     
@@ -165,12 +225,80 @@ xleftmargin=0cm
 \begin{frame}
     \frametitle{Anchor selection}
     
-    First try: anchor = $\left\{ 1,2,3 \right\}$
+    \begin{itemize}
+        \item First try: anchor = $\left\{ 1,2,3 \right\}$
+        \item BAD: maybe not in a robust quads at all
+        \item Solution: voting scheme. Score depends on:
     
+        \begin{itemize}
+            \item the number of robust quads the anchor is in
+            \item the ``robust quadness'' of the anchor
+        \end{itemize}
+    \end{itemize}
 \end{frame}
 
 \section{Results}
+\begin{frame}
+    \frametitle{Metrics}
+    
+    \begin{itemize}
+        \item $L$ \\~
+        \item $\sigma_p^2 = \sum_{i=1}^N \frac{\|\hat p_i - p_i\|}{N}$\\~
+        \item $\sigma_d^2 = \sum_{i=1}^M \frac{(\hat d_i - d_i)^2}{M}$\\~
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \includegraphics[width=\columnwidth]{schemas/set1-L-nosrf.eps}
+\end{frame}
+
+\begin{frame}
+    \includegraphics[width=\columnwidth]{schemas/set4-L-nosrf.eps}
+\end{frame}
+
+\begin{frame}
+    \includegraphics[width=\columnwidth]{schemas/set4-sp-nosrf.eps}
+\end{frame}
+
+\begin{frame}
+    \includegraphics[width=\columnwidth]{schemas/set4-sd-nosrf.eps}
+\end{frame}
+
+\begin{frame}
+    \includegraphics[width=\columnwidth]{schemas/set3-L.eps}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Other observations}
+    \begin{itemize}
+        \item Fixing the anchor: $\sim$40\% bad cases \\
+        \item Spring relaxation: smoother convergence, but not better \\
+    \end{itemize}
+\end{frame}
 \section{Conclusion}
+
+\begin{frame}
+    \frametitle{Conclusion}
+    Our implementation shows good result if: \\~
+    \begin{itemize}
+        \item Not too much noise \\~
+        \item Sufficient degree \\~
+    \end{itemize}
+\end{frame}
+\begin{frame}
+    \frametitle{Special thanks to...}
+    The developers of:
+    \begin{itemize}
+        \item FreeMind
+        \item Git
+        \item Geogebra
+        \item LucidChart
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    Any questions?
+\end{frame}
 %\begin{frame}[fragile]
     %\lstinputlisting{code/intrinsics.c}
 %\end{frame}
