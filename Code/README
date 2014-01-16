@@ -1,0 +1,13 @@
+Nothing special to know.
+
+Please modify/run script "distributed_network.m". The parameters are pretty straightforward.
+
+You may want to read dn_simulate and dn_generate_nodes, all parameters are specified in the header.
+
+-----
+
+The files runset* are meant to be run using the Python's fabric script (see in ../fabric) and analyzeset* should be use to reproduce the graphs. It's very unlikely that you'll use those since they require a bit of setup (to distribute the computation). If you like some more information, you can contact laurent.fasnacht@epfl.ch ;-)
+
+-----
+
+Every other files are functions. They are documented in the header.
